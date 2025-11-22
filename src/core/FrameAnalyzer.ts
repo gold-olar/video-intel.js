@@ -35,7 +35,7 @@ import type {
   FrameAnalyzerOptions,
   AnalysisPerformance,
   FrameQualityThresholds,
-  FrameAnalyzerErrorCode
+  // FrameAnalyzerErrorCode
 } from '../types/analyzer';
 
 /**
