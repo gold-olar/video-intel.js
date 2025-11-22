@@ -113,3 +113,6 @@ const videoIntel = new VideoIntel();
 
 export default videoIntel;
 export * from './types';
+
+// Export utility classes for advanced users
+export { VideoLoader } from './utils/VideoLoader';
