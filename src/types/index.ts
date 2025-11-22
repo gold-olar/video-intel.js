@@ -229,6 +229,51 @@ export interface SafetyFlag {
 }
 
 // ============================================================================
+// Frame Extraction Types
+// ============================================================================
+
+/**
+ * Options for extracting frames at regular intervals
+ */
+export interface IntervalOptions {
+  /** Start extracting from this timestamp (seconds) */
+  startTime?: number;
+  /** Stop extracting at this timestamp (seconds) */
+  endTime?: number;
+  /** Progress callback - receives percentage (0-100) */
+  onProgress?: ProgressCallback;
+}
+
+/**
+ * Options for converting canvas to blob
+ */
+export interface BlobOptions {
+  /** Image format - jpeg or png */
+  type?: 'image/jpeg' | 'image/png';
+  /** JPEG quality (0-1, only applies to jpeg) */
+  quality?: number;
+  /** Resize width (maintains aspect ratio if height not provided) */
+  width?: number;
+  /** Resize height (maintains aspect ratio if width not provided) */
+  height?: number;
+}
+
+/**
+ * Frame extraction result with metadata
+ * Useful for tracking frame information during processing
+ */
+export interface ExtractedFrame {
+  /** The canvas containing the frame data */
+  canvas: HTMLCanvasElement;
+  /** Timestamp in seconds where frame was extracted */
+  timestamp: number;
+  /** Width of the frame in pixels */
+  width: number;
+  /** Height of the frame in pixels */
+  height: number;
+}
+
+// ============================================================================
 // Error Types
 // ============================================================================
 
@@ -251,4 +296,9 @@ export enum ErrorCode {
   MEMORY_ERROR = 'MEMORY_ERROR',
   WORKER_ERROR = 'WORKER_ERROR',
   TIMEOUT_ERROR = 'TIMEOUT_ERROR',
+  // Frame extraction specific errors
+  SEEK_FAILED = 'SEEK_FAILED',
+  CANVAS_CONTEXT_ERROR = 'CANVAS_CONTEXT_ERROR',
+  INVALID_TIMESTAMP = 'INVALID_TIMESTAMP',
+  VIDEO_NOT_READY = 'VIDEO_NOT_READY',
 }

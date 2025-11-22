@@ -116,3 +116,4 @@ export * from './types';
 
 // Export utility classes for advanced users
 export { VideoLoader } from './utils/VideoLoader';
+export { FrameExtractor } from './core/FrameExtractor';
