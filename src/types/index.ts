@@ -302,3 +302,10 @@ export enum ErrorCode {
   INVALID_TIMESTAMP = 'INVALID_TIMESTAMP',
   VIDEO_NOT_READY = 'VIDEO_NOT_READY',
 }
+
+// ============================================================================
+// Frame Analyzer Types
+// ============================================================================
+
+// Export all analyzer types
+export * from './analyzer';
