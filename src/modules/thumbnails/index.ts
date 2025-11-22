@@ -5,6 +5,7 @@
  */
 
 export { FrameScorer } from './FrameScorer';
+export { ThumbnailGenerator } from './ThumbnailGenerator';
 export type {
   FrameScore,
   ScoringWeights,

@@ -117,4 +117,9 @@ export * from './types';
 // Export utility classes for advanced users
 export { VideoLoader } from './utils/VideoLoader';
 export { FrameExtractor } from './core/FrameExtractor';
+export { FrameAnalyzer } from './core/FrameAnalyzer';
 export { MemoryManager } from './utils/MemoryManager';
+
+// Export thumbnail generation classes
+export { ThumbnailGenerator } from './modules/thumbnails/ThumbnailGenerator';
+export { FrameScorer } from './modules/thumbnails/FrameScorer';
