@@ -309,3 +309,15 @@ export enum ErrorCode {
 
 // Export all analyzer types
 export * from './analyzer';
+
+// ============================================================================
+// Thumbnail Generation Types
+// ============================================================================
+
+// Export thumbnail-specific types
+export type {
+  FrameScore,
+  ScoringWeights,
+  FrameScorerOptions,
+  FrameComparison
+} from '../modules/thumbnails/types';
