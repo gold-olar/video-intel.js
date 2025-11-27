@@ -6,10 +6,14 @@ import { FiArrowLeft, FiPlay } from 'react-icons/fi';
 import VideoUploader from '@/components/Playground/VideoUploader';
 import FeatureSelector, { AnalysisConfig } from '@/components/Playground/FeatureSelector';
 import ResultsDisplay from '@/components/Playground/ResultsDisplay';
+import CodeGenerator from '@/components/Playground/CodeGenerator';
+import PerformanceMetrics from '@/components/Playground/PerformanceMetrics';
 import Footer from '@/components/Landing/Footer';
+import { loadVideoIntel } from '@/utils/videoIntelLoader';
 
 export default function PlaygroundPage() {
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [libraryLoaded, setLibraryLoaded] = useState<boolean | null>(null);
   const [config, setConfig] = useState<AnalysisConfig>({
     thumbnails: {
       enabled: true,
@@ -43,54 +47,99 @@ export default function PlaygroundPage() {
     setError(null);
 
     try {
-      // Mock analysis for now - replace with actual VideoIntel integration
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Load VideoIntel library
+      const videoIntel = await loadVideoIntel();
 
-      const mockResults = {
-        thumbnails: config.thumbnails.enabled
-          ? Array.from({ length: config.thumbnails.count }, (_, i) => ({
-              dataUrl: `https://via.placeholder.com/640x360?text=Thumbnail+${i + 1}`,
-              timestamp: (i + 1) * 2,
-              quality: 0.8 + Math.random() * 0.2,
-            }))
-          : undefined,
-        scenes: config.scenes.enabled
-          ? Array.from({ length: 4 }, (_, i) => ({
-              timestamp: (i + 1) * 3,
-              score: 50 + Math.random() * 50,
-            }))
-          : undefined,
-        colors: config.colors.enabled
-          ? [
-              { hex: '#FF6B6B', rgb: [255, 107, 107] as [number, number, number], percentage: 35 },
-              { hex: '#4ECDC4', rgb: [78, 205, 196] as [number, number, number], percentage: 25 },
-              { hex: '#45B7D1', rgb: [69, 183, 209] as [number, number, number], percentage: 20 },
-              { hex: '#FFA07A', rgb: [255, 160, 122] as [number, number, number], percentage: 12 },
-              { hex: '#98D8C8', rgb: [152, 216, 200] as [number, number, number], percentage: 8 },
-            ].slice(0, config.colors.count)
-          : undefined,
-        metadata: config.metadata
-          ? {
-              duration: 30,
-              width: 1920,
-              height: 1080,
-              frameRate: 30,
-              size: selectedVideo.size,
-            }
-          : undefined,
+      // Initialize (worker pool warnings in console are expected and safe to ignore)
+      try {
+        await videoIntel.init({ workers: 0 });
+      } catch (initError) {
+        // Init errors are non-critical, continue with analysis
+      }
+
+      const startTime = performance.now();
+      const timings: { [key: string]: number } = {};
+
+      // Build analysis options
+      const analysisOptions: any = {};
+
+      if (config.thumbnails.enabled) {
+        analysisOptions.thumbnails = {
+          count: config.thumbnails.count,
+          quality: config.thumbnails.quality,
+        };
+      }
+
+      if (config.scenes.enabled) {
+        analysisOptions.scenes = {
+          // Convert threshold from 0-100 UI range to 0-1 library range
+          threshold: config.scenes.threshold / 100,
+        };
+      }
+
+      if (config.colors.enabled) {
+        analysisOptions.colors = {
+          count: config.colors.count,
+        };
+      }
+
+      if (config.metadata) {
+        analysisOptions.metadata = true;
+      }
+
+      // Perform analysis
+      const analysisResult = await videoIntel.analyze(selectedVideo, analysisOptions);
+
+      const totalTime = performance.now() - startTime;
+
+      // Convert thumbnail Blobs to data URLs for display
+      let thumbnails = analysisResult.thumbnails;
+      if (thumbnails && thumbnails.length > 0) {
+        thumbnails = await Promise.all(
+          thumbnails.map(async (thumb: any) => {
+            // Convert Blob to data URL
+            const dataUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(thumb.image);
+            });
+
+            return {
+              dataUrl,
+              timestamp: thumb.timestamp,
+              quality: thumb.score, // Map 'score' to 'quality'
+              width: thumb.width,
+              height: thumb.height,
+            };
+          })
+        );
+      }
+
+      // Extract timing information (if available from library)
+      const results = {
+        thumbnails,
+        scenes: analysisResult.scenes,
+        colors: analysisResult.colors,
+        metadata: analysisResult.metadata,
         performance: {
-          totalTime: 2000,
-          thumbnailTime: 800,
-          sceneTime: 600,
-          colorTime: 400,
-          metadataTime: 200,
+          totalTime: Math.round(totalTime),
+          thumbnailTime: analysisResult.performance?.thumbnailTime,
+          sceneTime: analysisResult.performance?.sceneTime,
+          colorTime: analysisResult.performance?.colorTime,
+          metadataTime: analysisResult.performance?.metadataTime,
         },
       };
 
-      setResults(mockResults);
+      setResults(results);
     } catch (err) {
-      setError('Failed to analyze video. Please try again.');
-      console.error(err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to analyze video';
+      setError(errorMessage);
+      console.error('Analysis error:', err);
+      
+      // Check if it's a library loading error
+      if (errorMessage.includes('VideoIntel library could not be loaded')) {
+        setLibraryLoaded(false);
+      }
     } finally {
       setLoading(false);
     }
@@ -191,6 +240,47 @@ export default function PlaygroundPage() {
             </div>
           </div>
         </div>
+
+        {/* Code Generator */}
+        {results && (
+          <div className="mt-8">
+            <CodeGenerator config={config} videoFileName={selectedVideo?.name} />
+          </div>
+        )}
+
+        {/* Performance Metrics - Alternative View */}
+        {results && results.performance && (
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Detailed Performance Metrics
+            </h2>
+            <PerformanceMetrics 
+              performance={results.performance} 
+              metadata={results.metadata}
+            />
+          </div>
+        )}
+
+        {/* Library Status Warning */}
+        {libraryLoaded === false && (
+          <div className="mt-8 rounded-lg border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/30 p-6">
+            <h3 className="text-sm font-semibold text-orange-900 dark:text-orange-100 mb-2">
+              ⚠️ VideoIntel Library Not Available
+            </h3>
+            <p className="text-sm text-orange-700 dark:text-orange-300 mb-3">
+              The VideoIntel library needs to be built before the playground can function.
+            </p>
+            <div className="text-sm text-orange-700 dark:text-orange-300">
+              <p className="font-semibold mb-2">To fix this:</p>
+              <ol className="list-decimal list-inside space-y-1 ml-2">
+                <li>Open a terminal in the project root directory</li>
+                <li>Run: <code className="bg-orange-900/20 px-2 py-0.5 rounded">npm run build</code></li>
+                <li>Restart the dev server: <code className="bg-orange-900/20 px-2 py-0.5 rounded">npm run dev</code></li>
+                <li>Refresh this page</li>
+              </ol>
+            </div>
+          </div>
+        )}
 
         {/* Info Box */}
         <div className="mt-8 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30 p-6">

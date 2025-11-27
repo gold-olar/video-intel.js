@@ -1,0 +1,12 @@
+# Sample videos for the playground
+
+These videos are used for testing the VideoIntel playground without requiring users to upload their own files.
+
+## Files:
+- `sample-10s.mp4` - 10 second demo video (2.4 MB)
+- `sample-30s.mp4` - 30 second product video (2.2 MB)
+- `sample-scenes.mp4` - Video with multiple scene changes (46 MB)
+
+## Source:
+Copied from `/tests/fixtures/` directory.
+

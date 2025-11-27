@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { FiUpload, FiVideo, FiX } from 'react-icons/fi';
+import SampleVideoSelector from './SampleVideoSelector';
 
 interface VideoUploaderProps {
   onVideoSelect: (file: File) => void;
@@ -134,23 +135,12 @@ export default function VideoUploader({ onVideoSelect, selectedVideo, onClear }:
         </div>
       )}
 
-      {/* Sample Videos (Optional) */}
-      <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Or try a sample video:
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <button className="px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-            Sample 10s
-          </button>
-          <button className="px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-            Sample 30s
-          </button>
-          <button className="px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-            Scene Changes
-          </button>
+      {/* Sample Videos */}
+      {!selectedVideo && (
+        <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+          <SampleVideoSelector onVideoSelect={handleFileSelect} />
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -10,8 +10,11 @@ interface Thumbnail {
 }
 
 interface Scene {
-  timestamp: number;
-  score: number;
+  timestamp?: number; // For display
+  start?: number; // From library
+  end?: number;
+  score?: number; // For display
+  confidence?: number; // From library
 }
 
 interface Color {
@@ -119,25 +122,39 @@ export default function ResultsDisplay({ results, loading }: ResultsDisplayProps
       <div className="min-h-[400px]">
         {activeTab === 'thumbnails' && results.thumbnails && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {results.thumbnails.map((thumb, index) => (
-              <div key={index} className="group relative rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
-                <img src={thumb.dataUrl} alt={`Thumbnail ${index + 1}`} className="w-full h-auto" />
-                <div className="p-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {thumb.timestamp.toFixed(2)}s
-                    </span>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      Score: {thumb.quality.toFixed(2)}
-                    </span>
+            {results.thumbnails.map((thumb, index) => {
+              const handleDownload = () => {
+                const link = document.createElement('a');
+                link.href = thumb.dataUrl;
+                link.download = `thumbnail-${index + 1}-${(thumb.timestamp || 0).toFixed(2)}s.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              };
+
+              return (
+                <div key={index} className="group relative rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+                  <img src={thumb.dataUrl} alt={`Thumbnail ${index + 1}`} className="w-full h-auto" />
+                  <div className="p-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {(thumb.timestamp || 0).toFixed(2)}s
+                      </span>
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Score: {(thumb.quality || 0).toFixed(2)}
+                      </span>
+                    </div>
+                    <button 
+                      onClick={handleDownload}
+                      className="mt-2 w-full flex items-center justify-center gap-2 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors"
+                    >
+                      <FiDownload className="h-3 w-3" />
+                      Download
+                    </button>
                   </div>
-                  <button className="mt-2 w-full flex items-center justify-center gap-2 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors">
-                    <FiDownload className="h-3 w-3" />
-                    Download
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -159,19 +176,23 @@ export default function ResultsDisplay({ results, loading }: ResultsDisplayProps
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-950 divide-y divide-gray-200 dark:divide-gray-800">
-                  {results.scenes.map((scene, index) => (
-                    <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {scene.timestamp.toFixed(2)}s
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                        {scene.score.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
+                  {results.scenes.map((scene, index) => {
+                    const timestamp = scene.timestamp ?? scene.start ?? 0;
+                    const score = scene.score ?? scene.confidence ?? 0;
+                    return (
+                      <tr key={index}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          {timestamp.toFixed(2)}s
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          {(score * 100).toFixed(0)}% {/* Convert 0-1 to percentage */}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -202,7 +223,7 @@ export default function ResultsDisplay({ results, loading }: ResultsDisplayProps
                     RGB: {color.rgb.join(', ')}
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    Usage: {color.percentage.toFixed(1)}%
+                    Usage: {(color.percentage || 0).toFixed(1)}%
                   </div>
                 </div>
               </div>
