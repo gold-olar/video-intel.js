@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+
+/* Custom background grid pattern */
+.bg-grid-gray-900\/\[0\.04\] {
+  background-image: linear-gradient(to right, rgb(17 24 39 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(17 24 39 / 0.04) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+}
+
+.bg-grid-white\/\[0\.02\] {
+  background-image: linear-gradient(to right, rgb(255 255 255 / 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.02) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(17 24 39);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(75 85 99);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(107 114 128);
+}
