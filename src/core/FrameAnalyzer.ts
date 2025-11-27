@@ -43,9 +43,9 @@ import type {
  * These values work well for most use cases but can be adjusted based on your needs.
  */
 const DEFAULT_THRESHOLDS: FrameQualityThresholds = {
-  blackFrameThreshold: 0.1,   // Frames with <10% brightness are considered black
-  whiteFrameThreshold: 0.9,   // Frames with >90% brightness are considered white
-  blurThreshold: 0.3          // Frames with <30% sharpness are considered blurry
+  blackFrameThreshold: 0.05,  // Frames with <5% brightness are considered black
+  whiteFrameThreshold: 0.95,  // Frames with >95% brightness are considered white
+  blurThreshold: 0.05         // Frames with <5% sharpness are considered blurry (very lenient for browser compatibility)
 };
 
 /**

@@ -615,7 +615,7 @@ export class MemoryManager {
    */
   public getCurrentMemoryUsage(): MemoryInfo | null {
     // Check if performance.memory is available (Chrome/Edge only)
-    const performance = globalThis.performance as any;
+    const performance = globalThis.performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } };
     
     if (!performance || !performance.memory) {
       return null; // Not available in this browser

@@ -488,7 +488,7 @@ export class FrameDifferenceCalculator {
   private calculateHistogramDifference(
     data1: Uint8ClampedArray,
     data2: Uint8ClampedArray,
-    options: Required<DifferenceOptions>
+    _options: Required<DifferenceOptions>
   ): number {
     // Build histograms for both frames
     const hist1 = this.buildHistogram(data1);

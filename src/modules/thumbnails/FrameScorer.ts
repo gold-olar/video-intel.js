@@ -69,13 +69,14 @@ const DEFAULT_WEIGHTS: ScoringWeights = {
  * Minimum score threshold for usable frames in strict mode.
  * Frames below this score are marked as unusable.
  */
-const STRICT_USABILITY_THRESHOLD = 0.6;
+const STRICT_USABILITY_THRESHOLD = 0.3;
 
 /**
  * Minimum score threshold for usable frames in normal mode.
  * More lenient to accept a wider range of frames.
+ * Set very low to accept most frames that aren't black/white/extremely blurry.
  */
-const NORMAL_USABILITY_THRESHOLD = 0.4;
+const NORMAL_USABILITY_THRESHOLD = 0.1;
 
 /**
  * FrameScorer class
@@ -270,8 +271,10 @@ export class FrameScorer extends FrameAnalyzer<FrameScore> {
       issues.push(`Overall quality score (${score.toFixed(2)}) below threshold (${minThreshold})`);
     }
 
-    // Frame is usable only if it has no issues
-    const isUsable = issues.length === 0;
+    // Frame is usable if it's not black/white AND (not blurry OR score is acceptable)
+    // More lenient: Accept frames that might be slightly blurry if they score well enough
+    const isUsable = !statistics.isBlackFrame && !statistics.isWhiteFrame && 
+                     (!statistics.isBlurry || score >= minThreshold * 0.8);
 
     // Step 7: Return comprehensive score result
     return {

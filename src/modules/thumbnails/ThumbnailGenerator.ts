@@ -120,8 +120,9 @@ const SHORT_VIDEO_THRESHOLD = 30;
  * Videos longer than this might need batched processing or lower sampling.
  * 
  * IMPROVEMENT: Implement batched processing for very long videos (>30 min).
+ * NOTE: Currently unused but reserved for future optimization.
  */
-const LONG_VIDEO_THRESHOLD = 1800; // 30 minutes
+const _LONG_VIDEO_THRESHOLD = 1800; // 30 minutes
 
 // ============================================================================
 // MAIN CLASS
