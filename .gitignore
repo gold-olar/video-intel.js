@@ -11,6 +11,21 @@ build/
 coverage/
 .nyc_output/
 
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Test fixtures (video files can be large)
+tests/fixtures/*.mp4
+tests/fixtures/*.webm
+tests/fixtures/*.mov
+tests/fixtures/*.avi
+tests/fixtures/*.ogg
+# Keep the download script
+!tests/fixtures/download-test-videos.js
+!tests/fixtures/README.md
+
 
 
 # IDE

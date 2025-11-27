@@ -555,8 +555,8 @@ describe('FrameAnalyzer', () => {
 
   describe('isBlurryFrame()', () => {
     it('should detect blurry frames with default threshold', () => {
-      // Very low sharpness = blurry
-      expect(analyzer.testIsBlurryFrame(0.1)).toBe(true);
+      // Very low sharpness = blurry (below 0.05 threshold)
+      expect(analyzer.testIsBlurryFrame(0.03)).toBe(true);
     });
 
     it('should not detect sharp frames as blurry', () => {

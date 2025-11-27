@@ -15,6 +15,13 @@
     "dev": "rollup -c rollup.config.mjs -w",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:integration": "jest tests/integration",
+    "test:browser": "playwright test",
+    "test:browser:headed": "playwright test --headed",
+    "test:browser:debug": "playwright test --debug",
+    "test:browser:chromium": "playwright test --project=chromium",
+    "test:browser:ui": "playwright test --ui",
+    "test:download-fixtures": "node tests/fixtures/download-test-videos.js",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "type-check": "tsc --noEmit",
@@ -46,6 +53,7 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.4",

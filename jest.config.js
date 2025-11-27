@@ -3,6 +3,10 @@ module.exports = {
   testEnvironment: 'jsdom',
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: ['**/*.test.ts'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '\\.browser\\.test\\.ts$'  // Ignore browser tests (run with Playwright)
+  ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   collectCoverageFrom: [
     'src/**/*.ts',
