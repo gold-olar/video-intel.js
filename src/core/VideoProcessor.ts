@@ -18,6 +18,8 @@ import { VideoLoader } from '../utils/VideoLoader';
 import { MemoryManager } from '../utils/MemoryManager';
 import { FrameExtractor } from './FrameExtractor';
 import { SceneDetector, FrameDifferenceCalculator } from '../modules/scenes';
+import { ColorExtractor, KMeansClustering } from '../modules/colors';
+import { MetadataExtractor } from '../modules/metadata';
 
 export class VideoProcessor {
   private videoLoader: VideoLoader;
@@ -89,15 +91,94 @@ export class VideoProcessor {
 
   /**
    * Extract video metadata
+   * 
+   * Extracts comprehensive metadata from a video including:
+   * - Duration, dimensions, format
+   * - Aspect ratio, FPS
+   * - Audio/video track presence
+   * - File size and bitrate (when available)
+   * 
+   * @param videoInput - Video to analyze (File, Blob, or URL string)
+   * @returns Promise resolving to VideoMetadata object
+   * 
+   * @example
+   * ```typescript
+   * const processor = new VideoProcessor();
+   * const metadata = await processor.getMetadata(videoFile);
+   * 
+   * console.log(`Video: ${metadata.width}x${metadata.height}`);
+   * console.log(`Duration: ${metadata.duration}s`);
+   * console.log(`Aspect Ratio: ${metadata.aspectRatio}`);
+   * console.log(`Has Audio: ${metadata.hasAudio}`);
+   * ```
    */
-  async getMetadata(_videoInput: VideoInput): Promise<VideoMetadata> {
-    throw new Error('Not implemented yet');
+  async getMetadata(videoInput: VideoInput): Promise<VideoMetadata> {
+    // Load the video from input
+    const video = await this.videoLoader.load(videoInput);
+
+    try {
+      // Create metadata extractor
+      const metadataExtractor = new MetadataExtractor();
+
+      // Extract metadata
+      const metadata = await metadataExtractor.extract(video);
+
+      return metadata;
+    } finally {
+      // Always clean up resources, even if extraction fails
+      this.memoryManager.cleanupVideo(video);
+      this.videoLoader.cleanup();
+    }
   }
 
   /**
    * Extract dominant colors
+   * 
+   * Analyzes a video to extract the most dominant colors using K-means clustering.
+   * Useful for:
+   * - UI theming based on video content
+   * - Color palette generation
+   * - Video categorization by color
+   * 
+   * @param videoInput - Video to analyze (File, Blob, or URL string)
+   * @param options - Optional configuration for color extraction
+   * @returns Promise resolving to array of Color objects sorted by dominance
+   * 
+   * @example
+   * ```typescript
+   * const processor = new VideoProcessor();
+   * const colors = await processor.extractColors(videoFile, {
+   *   count: 5,           // Extract 5 dominant colors
+   *   sampleFrames: 10,   // Sample 10 frames from video
+   *   quality: 'balanced' // Balance between speed and accuracy
+   * });
+   * 
+   * // Use the colors
+   * colors.forEach(color => {
+   *   console.log(`${color.hex} - ${color.percentage.toFixed(1)}% of video`);
+   * });
+   * ```
    */
-  async extractColors(_videoInput: VideoInput, _options?: ColorOptions): Promise<Color[]> {
-    throw new Error('Not implemented yet');
+  async extractColors(videoInput: VideoInput, options?: ColorOptions): Promise<Color[]> {
+    // Load the video from input
+    const video = await this.videoLoader.load(videoInput);
+
+    try {
+      // Create color extractor with required dependencies
+      const clustering = new KMeansClustering();
+      const colorExtractor = new ColorExtractor(
+        this.frameExtractor,
+        clustering
+      );
+
+      // Extract colors
+      const colors = await colorExtractor.extract(video, options);
+
+      return colors;
+    } finally {
+      // Always clean up resources, even if extraction fails
+      this.memoryManager.cleanupVideo(video);
+      this.videoLoader.cleanup();
+    }
   }
 }
