@@ -123,3 +123,7 @@ export { MemoryManager } from './utils/MemoryManager';
 // Export thumbnail generation classes
 export { ThumbnailGenerator } from './modules/thumbnails/ThumbnailGenerator';
 export { FrameScorer } from './modules/thumbnails/FrameScorer';
+
+// Export scene detection classes
+export { SceneDetector } from './modules/scenes/SceneDetector';
+export { FrameDifferenceCalculator } from './modules/scenes/FrameDifferenceCalculator';
