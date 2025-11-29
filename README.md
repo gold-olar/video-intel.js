@@ -243,19 +243,12 @@ Extract video metadata (duration, dimensions, format, etc.).
 
 For comprehensive guides, API reference, and interactive examples:
 
-**[📖 Full Documentation](https://gold-olar.github.io/video-intel.js/)**  
-
-### What's in the docs?
-
-- 📖 **Complete API Reference** - Every method, option, and type
-- 🎮 **Interactive Playground** - Test features directly in your browser
-- 📊 **Performance Benchmarks** - Real-world performance data
-- 💡 **Guides & Tutorials** - Step-by-step examples
-- 🔧 **Advanced Usage** - Custom configurations and optimizations
+**[📖 Full Documentation](https://gold-olar.github.io/video_intel_js/)** *(Coming Soon)*
 
 ### Running Docs Locally
 
 ```bash
+
 cd docs-site
 npm install
 npm run dev
@@ -463,7 +456,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 - **NPM Package**: https://www.npmjs.com/package/videointel
 - **GitHub Repository**: https://github.com/gold-olar/video-intel.js
-- **Documentation**: https://gold-olar.github.io/video-intel.js/
+- **Documentation**: https://gold-olar.github.io/video_intel_js/ *(Coming Soon)*
 - **Issue Tracker**: https://github.com/gold-olar/video-intel.js/issues
 - **Changelog**: [CHANGELOG.md](./CHANGELOG.md)
 
@@ -473,12 +466,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 If VideoIntel.js helps you build something awesome, give it a ⭐ on GitHub!
 
+Want to support the development? Buy me a coffee! ☕
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/gold_olar)
+
 ---
 
 <div align="center">
 
 **Built with ❤️ using TypeScript**
 
-[Report Bug](https://github.com/gold-olar/video-intel.js/issues) · [Request Feature](https://github.com/gold-olar/video-intel.js/issues) · [Documentation](https://gold-olar.github.io/video-intel.js/)
+[Report Bug](https://github.com/gold-olar/video-intel.js/issues) · [Request Feature](https://github.com/gold-olar/video-intel.js/issues) · [Documentation](https://gold-olar.github.io/video_intel_js/)
 
 </div>
