@@ -314,9 +314,9 @@ MIT License - see [LICENSE](../LICENSE) file for details
 
 ## 📞 Support
 
-- [Documentation](https://yourusername.github.io/video-intel-js/docs)
-- [Issues](https://github.com/yourusername/video-intel-js/issues)
-- [Discussions](https://github.com/yourusername/video-intel-js/discussions)
+- [Documentation](https://gold-olar.github.io/video-intel.js/)
+- [Issues](https:/github.com/gold-olar/video-intel.js/issues)
+- [Discussions](https:/github.com/gold-olar/video-intel.js/discussions)
 
 ---
 

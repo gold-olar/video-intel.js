@@ -182,7 +182,7 @@ export default function FAQPage() {
       <h3>How do I report a bug?</h3>
       <p>
         Please open an issue on our{' '}
-        <a href="https://github.com/yourusername/video-intel-js/issues" className="text-indigo-600 dark:text-indigo-400 underline">
+        <a href="https:/github.com/gold-olar/video-intel.js/issues" className="text-indigo-600 dark:text-indigo-400 underline">
           GitHub repository
         </a>{' '}
         with:
@@ -203,7 +203,7 @@ export default function FAQPage() {
           Check out the{' '}
           <a href="/docs/api" className="underline">API Reference</a>,{' '}
           <a href="/docs/guides" className="underline">Guides</a>, or{' '}
-          <a href="https://github.com/yourusername/video-intel-js/discussions" className="underline">
+          <a href="https:/github.com/gold-olar/video-intel.js/discussions" className="underline">
             open a discussion on GitHub
           </a>.
         </p>

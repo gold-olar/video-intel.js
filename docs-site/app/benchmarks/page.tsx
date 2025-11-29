@@ -236,7 +236,7 @@ export default function BenchmarksPage() {
             <p>
               • Source code for benchmarks is available in the{' '}
               <a
-                href="https://github.com/yourusername/video-intel-js/tree/main/tests/performance"
+                href="https://github.com/gold-olar/video-intel.js/tree/main/tests/performance"
                 className="underline font-medium"
               >
                 repository
