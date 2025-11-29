@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/video_intel_js' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/video_intel_js/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/video-intel.js' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/video-intel.js/' : '',
 };
 
 export default nextConfig;
