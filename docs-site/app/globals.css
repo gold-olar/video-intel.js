@@ -18,6 +18,181 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Enhanced prose styling for better readability */
+.prose {
+  color: rgb(55 65 81);
+  line-height: 1.75;
+}
+
+/* Headings with better hierarchy and spacing */
+.prose h1 {
+  color: rgb(17 24 39);
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  letter-spacing: -0.025em;
+}
+
+.prose h2 {
+  color: rgb(17 24 39);
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgb(229 231 235);
+  letter-spacing: -0.025em;
+}
+
+.prose h3 {
+  color: rgb(31 41 55);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose h4 {
+  color: rgb(31 41 55);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Paragraphs and lists with better spacing */
+.prose p {
+  color: rgb(55 65 81);
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.625rem;
+}
+
+.prose li {
+  color: rgb(55 65 81);
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose li p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Lead paragraph styling */
+.prose .lead {
+  color: rgb(75 85 99);
+  font-size: 1.25rem;
+  line-height: 1.75;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Strong text */
+.prose strong {
+  color: rgb(17 24 39);
+  font-weight: 600;
+}
+
+/* Links */
+.prose a {
+  color: rgb(37 99 235);
+  text-decoration: underline;
+  text-decoration-color: rgb(191 219 254);
+  text-underline-offset: 2px;
+  transition: all 0.2s;
+}
+
+.prose a:hover {
+  color: rgb(29 78 216);
+  text-decoration-color: rgb(37 99 235);
+}
+
+/* Code */
+.prose code {
+  color: rgb(17 24 39);
+  font-weight: 500;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+/* Dark mode text color fixes for prose */
+@media (prefers-color-scheme: dark) {
+  .prose {
+    color: rgb(229 231 235);
+  }
+  
+  .prose h1 {
+    color: rgb(249 250 251);
+    font-weight: 800;
+    border-bottom: none;
+  }
+  
+  .prose h2 {
+    color: rgb(243 244 246);
+    font-weight: 700;
+    border-bottom-color: rgb(55 65 81);
+  }
+  
+  .prose h3 {
+    color: rgb(243 244 246);
+    font-weight: 600;
+  }
+  
+  .prose h4 {
+    color: rgb(229 231 235);
+    font-weight: 600;
+  }
+  
+  .prose p,
+  .prose li {
+    color: rgb(209 213 219);
+  }
+  
+  .prose .lead {
+    color: rgb(156 163 175);
+  }
+  
+  .prose strong {
+    color: rgb(243 244 246);
+    font-weight: 600;
+  }
+  
+  .prose code {
+    color: rgb(243 244 246);
+  }
+  
+  .prose a {
+    color: rgb(96 165 250);
+    text-decoration-color: rgb(30 64 175);
+  }
+  
+  .prose a:hover {
+    color: rgb(147 197 253);
+    text-decoration-color: rgb(96 165 250);
+  }
+  
+  .prose td,
+  .prose th {
+    color: rgb(229 231 235);
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;

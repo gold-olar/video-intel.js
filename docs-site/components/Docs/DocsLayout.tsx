@@ -56,13 +56,13 @@ export default function DocsLayout({ children, tocItems = [] }: DocsLayoutProps)
       </header>
 
       {/* Main Layout */}
-      <div className="flex flex-1 max-w-[1800px] mx-auto w-full">
+      <div className="flex max-w-[1800px] mx-auto w-full h-[95vh] overflow-hidden">
         {/* Sidebar */}
         <Sidebar />
 
         {/* Content */}
-        <main className="flex-1 px-6 py-8 lg:px-12 lg:py-12 overflow-auto">
-          <article className="prose prose-gray dark:prose-invert max-w-3xl">
+        <main className="flex-1 px-6 py-8 lg:px-12 lg:py-12 overflow-y-auto h-full">
+          <article className="prose prose-gray dark:prose-invert max-w-3xl text-gray-900 dark:text-gray-100">
             {children}
           </article>
         </main>

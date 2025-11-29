@@ -84,7 +84,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto">
+    <aside className="w-64 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 sticky top-0 h-[95vh] overflow-y-auto">
       <nav className="p-6 space-y-8">
         {navigation.map((section) => (
           <div key={section.href}>

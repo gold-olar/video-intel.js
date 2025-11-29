@@ -52,7 +52,7 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
                 Generate Thumbnails
               </h4>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Extract smart thumbnails from video
+                Auto-select best frames based on sharpness, brightness & color
               </p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
           <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-800">
             <div>
               <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Count: {config.thumbnails.count}
+                Number of Thumbnails: {config.thumbnails.count}
               </label>
               <input
                 type="range"
@@ -89,10 +89,13 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
                 }
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                How many thumbnails to generate from the video
+              </p>
             </div>
             <div>
               <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Quality: {config.thumbnails.quality.toFixed(1)}
+                <span>Image Compression Quality: {config.thumbnails.quality.toFixed(1)}</span>
               </label>
               <input
                 type="range"
@@ -107,6 +110,9 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
                 }
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <span className="font-medium">Note:</span> This controls JPEG compression quality (file size vs image quality), not which frames are selected. All frames are scored, and the best ones are automatically chosen.
+              </p>
             </div>
           </div>
         )}
@@ -146,12 +152,14 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
         {config.scenes.enabled && (
           <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
             <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Sensitivity: {config.scenes.threshold}
+              <span>Threshold</span>
+              <span className="font-mono text-purple-600 dark:text-purple-400">{config.scenes.threshold}%</span>
             </label>
             <input
               type="range"
-              min="10"
-              max="100"
+              min="5"
+              max="50"
+              step="5"
               value={config.scenes.threshold}
               onChange={(e) =>
                 updateConfig({
@@ -160,9 +168,15 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
               }
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              Lower values detect more subtle changes
-            </p>
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <span>More sensitive (5%)</span>
+              <span>Less sensitive (50%)</span>
+            </div>
+            <div className="mt-3 p-2 bg-purple-50 dark:bg-purple-950/30 rounded border border-purple-200 dark:border-purple-800">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                <strong className="text-purple-600 dark:text-purple-400">Tip:</strong> Start with 10-15% for videos with subtle scene changes. Use 25-30% for videos with clear, distinct cuts.
+              </p>
+            </div>
           </div>
         )}
       </div>

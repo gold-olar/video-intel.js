@@ -35,15 +35,153 @@ export default function ThumbnailGuidePage() {
       </ul>
 
       <h2 id="how-it-works">How It Works</h2>
-      <p>The thumbnail generation process follows these steps:</p>
+      <p>The thumbnail generation process follows a sophisticated 7-step pipeline:</p>
 
-      <ol>
-        <li><strong>Frame Extraction:</strong> Sample frames at regular intervals</li>
-        <li><strong>Quality Scoring:</strong> Rate each frame based on multiple criteria</li>
-        <li><strong>Deduplication:</strong> Remove visually similar frames</li>
-        <li><strong>Selection:</strong> Choose top N frames with highest scores</li>
-        <li><strong>Optimization:</strong> Resize and compress to target quality</li>
-      </ol>
+      <div className="not-prose space-y-4 my-6">
+        <div className="border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/30 p-4">
+          <h4 className="font-bold text-blue-900 dark:text-blue-100 mb-2">
+            Step 1: Extraction Strategy
+          </h4>
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            Calculate which frames to extract as candidates. Extracts 3x more candidates than needed
+            (e.g., 15 candidates for 5 thumbnails) and skips 5% margins at start/end to avoid
+            fade-in/fade-out transitions.
+          </p>
+        </div>
+
+        <div className="border-l-4 border-green-500 bg-green-50 dark:bg-green-950/30 p-4">
+          <h4 className="font-bold text-green-900 dark:text-green-100 mb-2">
+            Step 2: Frame Extraction
+          </h4>
+          <p className="text-sm text-green-800 dark:text-green-200">
+            Extract candidate frames at calculated timestamps. Frames are extracted in chronological
+            order for optimal performance with minimum 2-second spacing between candidates.
+          </p>
+        </div>
+
+        <div className="border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-950/30 p-4">
+          <h4 className="font-bold text-purple-900 dark:text-purple-100 mb-2">
+            Step 3: Quality Scoring
+          </h4>
+          <p className="text-sm text-purple-800 dark:text-purple-200">
+            Score each frame using a composite algorithm that evaluates: <strong>sharpness</strong> (Laplacian
+            variance), <strong>brightness</strong> (luminance formula), <strong>contrast</strong> (min-max range),
+            and <strong>color variance</strong> (RGB diversity). Scores are normalized to 0-1 range.
+          </p>
+        </div>
+
+        <div className="border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-950/30 p-4">
+          <h4 className="font-bold text-orange-900 dark:text-orange-100 mb-2">
+            Step 4: Frame Filtering
+          </h4>
+          <p className="text-sm text-orange-800 dark:text-orange-200">
+            Filter out unusable frames: black frames ({"<"}5% brightness), white/overexposed frames
+            ({">"}95% brightness), and blurry frames ({"<"}5% sharpness). Typically filters 20-30% of candidates.
+          </p>
+        </div>
+
+        <div className="border-l-4 border-red-500 bg-red-50 dark:bg-red-950/30 p-4">
+          <h4 className="font-bold text-red-900 dark:text-red-100 mb-2">
+            Step 5: Diversity Filter
+          </h4>
+          <p className="text-sm text-red-800 dark:text-red-200">
+            Apply temporal diversity to spread thumbnails across video timeline. Always selects
+            highest-scoring frame, then adds frames that are at least 5 seconds apart for
+            comprehensive video coverage.
+          </p>
+        </div>
+
+        <div className="border-l-4 border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 p-4">
+          <h4 className="font-bold text-indigo-900 dark:text-indigo-100 mb-2">
+            Step 6: Thumbnail Generation
+          </h4>
+          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+            Convert selected frames to final thumbnails with specified format (JPEG/PNG), quality
+            (0-1), and dimensions. Maintains aspect ratio automatically if only one dimension specified.
+          </p>
+        </div>
+
+        <div className="border-l-4 border-pink-500 bg-pink-50 dark:bg-pink-950/30 p-4">
+          <h4 className="font-bold text-pink-900 dark:text-pink-100 mb-2">
+            Step 7: Memory Cleanup
+          </h4>
+          <p className="text-sm text-pink-800 dark:text-pink-200">
+            Clean up temporary canvas elements to prevent memory leaks. Essential for processing
+            multiple videos or generating many thumbnails.
+          </p>
+        </div>
+      </div>
+
+      <h3>Quality Scoring Algorithm</h3>
+      <p>
+        Each frame receives a composite quality score based on four metrics:
+      </p>
+
+      <CodeBlock
+        language="typescript"
+        code={`// Simplified scoring algorithm
+function scoreFrame(imageData: ImageData) {
+  // 1. Sharpness (0-1): Laplacian variance edge detection
+  // Sharp images have strong edges and high variance
+  const sharpness = calculateLaplacianVariance(imageData);
+  
+  // 2. Brightness (0-1): Perceptual luminance
+  // Y = 0.299R + 0.587G + 0.114B (weighted for human perception)
+  const brightness = calculatePerceptualBrightness(imageData);
+  
+  // 3. Contrast (0-1): Dynamic range
+  // High contrast = wide range of brightness values
+  const contrast = (maxLuminance - minLuminance) / 255;
+  
+  // 4. Color Variance (0-1): RGB diversity
+  // Colorful images have high variance across channels
+  const colorVariance = calculateRGBVariance(imageData);
+  
+  // Composite score with weighted average
+  const score = (
+    sharpness * 0.4 +      // 40% weight (most important)
+    brightness * 0.2 +     // 20% weight
+    contrast * 0.2 +       // 20% weight
+    colorVariance * 0.2    // 20% weight
+  );
+  
+  return score;
+}`}
+      />
+
+      <h3>Frame Filtering Thresholds</h3>
+      <p>
+        VideoIntel uses conservative thresholds to filter unusable frames:
+      </p>
+
+      <div className="not-prose overflow-x-auto my-6">
+        <table className="min-w-full border border-gray-300 dark:border-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Check</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Threshold</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Purpose</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tr>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">Black Frame</td>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{"<"} 5% brightness</td>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">Filter fade-to-black transitions</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">White Frame</td>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{"> "}95% brightness</td>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">Filter overexposed/fade-to-white</td>
+            </tr>
+            <tr>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">Blurry Frame</td>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{"<"} 5% sharpness</td>
+              <td className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">Filter out-of-focus or motion blur</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <CodeBlock
         language="typescript"

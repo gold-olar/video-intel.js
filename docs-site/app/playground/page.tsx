@@ -22,7 +22,7 @@ export default function PlaygroundPage() {
     },
     scenes: {
       enabled: true,
-      threshold: 30,
+      threshold: 15, // Lower default for better scene detection
     },
     colors: {
       enabled: true,

@@ -160,6 +160,33 @@ export default function ResultsDisplay({ results, loading }: ResultsDisplayProps
 
         {activeTab === 'scenes' && results.scenes && (
           <div className="space-y-4">
+            {/* Warning for videos with few or no scene changes */}
+            {results.scenes.length <= 2 && (
+              <div className="rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/30 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="text-yellow-600 dark:text-yellow-400 text-lg">⚠️</div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-yellow-900 dark:text-yellow-100 mb-1">
+                      {results.scenes.length === 1 ? 'No Scene Changes Detected' : 'Limited Scene Changes Detected'}
+                    </h4>
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300 mb-2">
+                      {results.scenes.length === 1 
+                        ? 'The entire video appears to be one continuous scene.'
+                        : 'Only the start and end of the video were detected as scenes.'}
+                    </p>
+                    <div className="text-xs text-yellow-700 dark:text-yellow-300">
+                      <p className="font-semibold mb-1">Try these solutions:</p>
+                      <ul className="list-disc list-inside space-y-0.5 ml-2">
+                        <li><strong>Lower the threshold</strong> to 5-10% in the configuration panel</li>
+                        <li>Ensure your video has actual scene changes (cuts, transitions)</li>
+                        <li>Videos with continuous shots may not have detectable scene boundaries</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                 <thead className="bg-gray-50 dark:bg-gray-900">
@@ -171,7 +198,7 @@ export default function ResultsDisplay({ results, loading }: ResultsDisplayProps
                       Timestamp
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Score
+                      Confidence
                     </th>
                   </tr>
                 </thead>

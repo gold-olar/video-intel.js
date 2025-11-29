@@ -45,8 +45,8 @@ export default function TableOfContents({ items }: TableOfContentsProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav className="w-56 hidden xl:block">
-      <div className="sticky top-24 pl-6">
+    <nav className="w-56 hidden xl:block sticky top-0 h-[95vh] overflow-y-auto">
+      <div className="pl-6 py-8">
         <h3 className="text-xs font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">
           On This Page
         </h3>
