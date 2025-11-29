@@ -136,11 +136,11 @@ export default function VideoUploader({ onVideoSelect, selectedVideo, onClear }:
       )}
 
       {/* Sample Videos */}
-      {!selectedVideo && (
+      {/* {!selectedVideo && (
         <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
           <SampleVideoSelector onVideoSelect={handleFileSelect} />
         </div>
-      )}
+      )} */}
     </div>
   );
 }
