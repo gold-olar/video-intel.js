@@ -49,6 +49,10 @@
     "url": "https://github.com/gold-olar/video-intel.js/issues"
   },
   "homepage": "https://github.com/gold-olar/video-intel.js#readme",
+  "funding": {
+    "type": "individual",
+    "url": "https://buymeacoffee.com/gold_olar"
+  },
   "engines": {
     "node": ">=18.0.0"
   },

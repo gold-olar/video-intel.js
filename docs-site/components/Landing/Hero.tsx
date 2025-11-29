@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FiPlay, FiBook } from 'react-icons/fi';
+import { FiPlay, FiBook, FiCoffee } from 'react-icons/fi';
 
 export default function Hero() {
   return (
@@ -22,21 +22,32 @@ export default function Hero() {
             Extract thumbnails, detect scenes, analyze colors, and more—all in the browser.
           </p>
 
-          <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link
-              href="/playground"
-              className="group flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all"
+          <div className="mt-10 flex flex-col items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-x-6">
+              <Link
+                href="/playground"
+                className="group flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all"
+              >
+                <FiPlay className="h-5 w-5" />
+                Try Playground
+              </Link>
+              <Link
+                href="/docs"
+                className="group flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-3 text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+              >
+                <FiBook className="h-5 w-5" />
+                View Docs
+              </Link>
+            </div>
+            <a
+              href="https://buymeacoffee.com/gold_olar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
-              <FiPlay className="h-5 w-5" />
-              Try Playground
-            </Link>
-            <Link
-              href="/docs"
-              className="group flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-3 text-base font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
-            >
-              <FiBook className="h-5 w-5" />
-              View Docs
-            </Link>
+              <FiCoffee className="h-4 w-4" />
+              <span>Support this project</span>
+            </a>
           </div>
 
           {/* Code Example */}

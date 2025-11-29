@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FiGithub, FiPackage, FiTwitter, FiHeart } from 'react-icons/fi';
+import { FiGithub, FiPackage, FiTwitter, FiHeart, FiCoffee } from 'react-icons/fi';
 
 const navigation = {
   product: [
@@ -70,6 +70,15 @@ export default function Footer() {
                 <span className="sr-only">Twitter</span>
                 <FiTwitter className="h-6 w-6" />
               </a>
+              <a
+                href="https://buymeacoffee.com/gold_olar"
+                className="text-gray-400 hover:text-gray-300 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="sr-only">Buy Me a Coffee</span>
+                <FiCoffee className="h-6 w-6" />
+              </a>
             </div>
           </div>
           <div className="mt-16 grid grid-cols-3 gap-8 xl:col-span-2 xl:mt-0">
@@ -125,11 +134,21 @@ export default function Footer() {
         <div className="mt-16 border-t border-gray-800 pt-8 sm:mt-20 lg:mt-24">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-xs leading-5 text-gray-400">
-              &copy; 2025 VideoIntel.js. Released under MIT License.
+              &copy; {new Date().getFullYear()} VideoIntel Released under MIT License.
             </p>
-            <p className="flex items-center gap-1 text-xs leading-5 text-gray-400">
-              Made with <FiHeart className="h-4 w-4 text-red-500" /> by the VideoIntel team
-            </p>
+            <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
+              <p className="flex items-center gap-1 text-xs leading-5 text-gray-400">
+                Made with <FiHeart className="h-4 w-4 text-red-500" /> by Samuel Olamide
+              </p>
+              <a
+                href="https://buymeacoffee.com/gold_olar"
+                className="flex items-center gap-1 text-xs leading-5 text-gray-400 hover:text-yellow-400 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FiCoffee className="h-4 w-4" /> Support this project
+              </a>
+            </div>
           </div>
         </div>
       </div>
