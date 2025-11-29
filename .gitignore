@@ -26,6 +26,17 @@ tests/fixtures/*.ogg
 !tests/fixtures/download-test-videos.js
 !tests/fixtures/README.md
 
+# Docs site videos (large files)
+docs-site/public/videos/*.mp4
+docs-site/public/videos/*.webm
+docs-site/public/videos/*.mov
+# Keep the .gitkeep file
+!docs-site/public/videos/.gitkeep
+
+# Docs site build output
+docs-site/out/
+docs-site/.next/
+
 
 
 # IDE
