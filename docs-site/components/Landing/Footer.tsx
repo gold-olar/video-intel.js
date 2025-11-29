@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FiGithub, FiPackage, FiHeart, FiCoffee } from 'react-icons/fi';
+import { trackExternalLink } from '@/lib/analytics';
 
 const navigation = {
   product: [
@@ -47,6 +48,7 @@ export default function Footer() {
                 className="text-gray-400 hover:text-gray-300 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLink('github', 'hero-section')}
               >
                 <span className="sr-only">GitHub</span>
                 <FiGithub className="h-6 w-6" />
@@ -56,6 +58,7 @@ export default function Footer() {
                 className="text-gray-400 hover:text-gray-300 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLink('npm', 'hero-section')}
               >
                 <span className="sr-only">NPM</span>
                 <FiPackage className="h-6 w-6" />
@@ -65,6 +68,7 @@ export default function Footer() {
                 className="text-gray-400 hover:text-gray-300 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLink('other', 'hero-section-coffee')}
               >
                 <span className="sr-only">Buy Me a Coffee</span>
                 <FiCoffee className="h-6 w-6" />
@@ -112,6 +116,11 @@ export default function Footer() {
                       className="text-sm leading-6 text-gray-400 hover:text-white transition-colors"
                       target={item.href.startsWith('http') ? '_blank' : undefined}
                       rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      onClick={() => {
+                        if (item.name === 'GitHub') trackExternalLink('github', 'footer-nav');
+                        else if (item.name === 'NPM') trackExternalLink('npm', 'footer-nav');
+                        else if (item.name === 'Issues') trackExternalLink('github', 'footer-issues');
+                      }}
                     >
                       {item.name}
                     </a>
@@ -135,6 +144,7 @@ export default function Footer() {
                 className="flex items-center gap-1 text-xs leading-5 text-gray-400 hover:text-yellow-400 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackExternalLink('other', 'footer-support')}
               >
                 <FiCoffee className="h-4 w-4" /> Support this project
               </a>

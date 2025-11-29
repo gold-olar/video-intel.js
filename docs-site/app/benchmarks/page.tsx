@@ -1,9 +1,13 @@
+'use client';
+
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { FiArrowLeft, FiClock, FiZap, FiCpu, FiHardDrive, FiRefreshCw } from 'react-icons/fi';
 import MetricsCard from '@/components/Benchmarks/MetricsCard';
 import ComparisonChart from '@/components/Benchmarks/ComparisonChart';
 import MetricsTable from '@/components/Benchmarks/MetricsTable';
 import Footer from '@/components/Landing/Footer';
+import { trackBenchmarkView, trackExternalLink } from '@/lib/analytics';
 
 // Sample benchmark data - in production, this would come from actual test runs
 const benchmarkData = {
@@ -55,6 +59,11 @@ export default function BenchmarksPage() {
     month: 'long',
     day: 'numeric',
   });
+  
+  // Track benchmark page view
+  useEffect(() => {
+    trackBenchmarkView('overview');
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -238,6 +247,9 @@ export default function BenchmarksPage() {
               <a
                 href="https://github.com/gold-olar/video-intel.js/tree/main/tests/performance"
                 className="underline font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackExternalLink('github', 'benchmarks-methodology')}
               >
                 repository
               </a>
