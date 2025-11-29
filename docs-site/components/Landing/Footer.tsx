@@ -62,15 +62,6 @@ export default function Footer() {
                 <FiPackage className="h-6 w-6" />
               </a>
               <a
-                href="https://twitter.com"
-                className="text-gray-400 hover:text-gray-300 transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span className="sr-only">Twitter</span>
-                <FiTwitter className="h-6 w-6" />
-              </a>
-              <a
                 href="https://buymeacoffee.com/gold_olar"
                 className="text-gray-400 hover:text-gray-300 transition-colors"
                 target="_blank"

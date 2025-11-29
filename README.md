@@ -38,9 +38,6 @@ yarn add videointel
 ```bash
 pnpm add videointel
 ```
-
----
-
 ## 🚀 Quick Start
 
 ### Basic Usage
@@ -248,36 +245,10 @@ For comprehensive guides, API reference, and interactive examples:
 
 **[📖 Full Documentation](https://gold-olar.github.io/video_intel_js/)** *(Coming Soon)*
 
-### What's in the docs?
-
-- 📖 **Complete API Reference** - Every method, option, and type
-- 🎮 **Interactive Playground** - Test features directly in your browser
-- 📊 **Performance Benchmarks** - Real-world performance data
-- 💡 **Guides & Tutorials** - Step-by-step examples
-- 🔧 **Advanced Usage** - Custom configurations and optimizations
-
-### Publishing the Documentation
-
-Ready to publish your own documentation? Check out these guides:
-
-- **[📋 Quick Start Guide](./DOCS_QUICK_START.md)** - Get started in 2 minutes
-- **[📚 Complete Publishing Guide](./DOCS_PUBLISHING_GUIDE.md)** - Comprehensive deployment instructions
-- **[✅ Deployment Checklist](./DOCS_CHECKLIST.md)** - Step-by-step verification
-- **[📊 Deployment Summary](./DOCS_DEPLOYMENT_SUMMARY.md)** - Overview and status
-
-The documentation site is production-ready and can be deployed to:
-- **GitHub Pages** (Free, recommended)
-- **Vercel** (Fastest deployment)
-- **Netlify** (Feature-rich)
-- **Custom Server** (Full control)
-
 ### Running Docs Locally
 
 ```bash
-# Quick test
-./scripts/test-docs-locally.sh
 
-# Or manually
 cd docs-site
 npm install
 npm run dev
@@ -494,6 +465,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## ⭐ Show Your Support
 
 If VideoIntel.js helps you build something awesome, give it a ⭐ on GitHub!
+
+Want to support the development? Buy me a coffee! ☕
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow?style=for-the-badge&logo=buy-me-a-coffee)](https://buymeacoffee.com/gold_olar)
 
 ---
 
