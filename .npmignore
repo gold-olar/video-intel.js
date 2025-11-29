@@ -1,0 +1,58 @@
+# Source files (only publish built files)
+src/
+
+# Tests
+tests/
+test-results/
+playwright-report/
+*.test.ts
+*.spec.ts
+__tests__/
+coverage/
+
+# Documentation site
+docs-site/
+
+# Config files
+tsconfig.json
+tsconfig.build.json
+jest.config.js
+jest.setup.js
+playwright.config.ts
+rollup.config.mjs
+eslint.config.js
+
+# Build artifacts
+*.tgz
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Documentation (keep README.md)
+plan.md
+PUBLISH_CHECKLIST.md
+NPM_PUBLISHING_GUIDE.md
+*.md
+!README.md
+!LICENSE
+
+# Misc
+.DS_Store
+Thumbs.db
+node_modules/
+
