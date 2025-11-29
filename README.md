@@ -456,9 +456,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 - **NPM Package**: https://www.npmjs.com/package/videointel
 - **GitHub Repository**: https://github.com/gold-olar/video-intel.js
-- **Documentation**: https://gold-olar.github.io/video_intel_js/ *(Coming Soon)*
+- **Documentation**: https://gold-olar.github.io/video-intel.js/ 
 - **Issue Tracker**: https://github.com/gold-olar/video-intel.js/issues
-- **Changelog**: [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FiGithub, FiPackage, FiTwitter, FiHeart, FiCoffee } from 'react-icons/fi';
+import { FiGithub, FiPackage, FiHeart, FiCoffee } from 'react-icons/fi';
 
 const navigation = {
   product: [
@@ -17,10 +17,9 @@ const navigation = {
     { name: 'FAQ', href: '/docs/faq' },
   ],
   community: [
-    { name: 'GitHub', href: 'https://github.com/yourusername/video_intel_js' },
-    { name: 'NPM', href: 'https://npmjs.com/package/video-intel' },
-    { name: 'Issues', href: 'https://github.com/yourusername/video_intel_js/issues' },
-    { name: 'Contributing', href: '/contributing' },
+    { name: 'GitHub', href: 'https://github.com/gold-olar/video-intel.js' },
+    { name: 'NPM', href: 'https://npmjs.com/package/videointel' },
+    { name: 'Issues', href: 'https://github.com/gold-olar/video-intel.js/issues' },
   ],
 };
 
