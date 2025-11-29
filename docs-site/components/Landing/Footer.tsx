@@ -16,6 +16,7 @@ const navigation = {
     { name: 'API Reference', href: '/docs/api' },
     { name: 'Guides', href: '/docs/guides' },
     { name: 'FAQ', href: '/docs/faq' },
+    { name: 'Privacy Policy', href: '/docs/privacy' },
   ],
   community: [
     { name: 'GitHub', href: 'https://github.com/gold-olar/video-intel.js' },
@@ -44,7 +45,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-6">
               <a
-                href="https://github.com/yourusername/video_intel_js"
+                href="https://github.com/gold-olar/video-intel.js"
                 className="text-gray-400 hover:text-gray-300 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"

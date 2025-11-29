@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import GoogleAnalytics from '@/components/Analytics/GoogleAnalytics';
+import AnalyticsProvider from '@/components/Analytics/AnalyticsProvider';
 
 export const metadata: Metadata = {
   title: 'VideoIntel.js - Smart Video Analysis in 3 Lines of Code',
@@ -12,12 +12,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-
   return (
     <html lang="en">
       <body className="antialiased">
-        {gaId && <GoogleAnalytics measurementId={gaId} />}
+        <AnalyticsProvider />
         {children}
       </body>
     </html>
