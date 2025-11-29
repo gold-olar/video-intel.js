@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { FiUpload, FiVideo, FiX } from 'react-icons/fi';
 import SampleVideoSelector from './SampleVideoSelector';
+import { trackPlaygroundAction } from '@/lib/analytics';
 
 interface VideoUploaderProps {
   onVideoSelect: (file: File) => void;
@@ -18,6 +19,12 @@ export default function VideoUploader({ onVideoSelect, selectedVideo, onClear }:
     onVideoSelect(file);
     const url = URL.createObjectURL(file);
     setVideoPreview(url);
+    
+    // Track video upload
+    trackPlaygroundAction('upload', {
+      file_size: file.size,
+      file_type: file.type,
+    });
   }, [onVideoSelect]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {

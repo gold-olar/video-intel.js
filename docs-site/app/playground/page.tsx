@@ -10,6 +10,7 @@ import CodeGenerator from '@/components/Playground/CodeGenerator';
 import PerformanceMetrics from '@/components/Playground/PerformanceMetrics';
 import Footer from '@/components/Landing/Footer';
 import { loadVideoIntel } from '@/utils/videoIntelLoader';
+import { trackPlaygroundAction, trackVideoProcessing } from '@/lib/analytics';
 
 export default function PlaygroundPage() {
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
@@ -45,6 +46,18 @@ export default function PlaygroundPage() {
 
     setLoading(true);
     setError(null);
+    
+    // Track analysis start
+    const enabledFeatures = [];
+    if (config.thumbnails.enabled) enabledFeatures.push('thumbnails');
+    if (config.scenes.enabled) enabledFeatures.push('scenes');
+    if (config.colors.enabled) enabledFeatures.push('colors');
+    if (config.metadata) enabledFeatures.push('metadata');
+    
+    trackPlaygroundAction('start', {
+      features: enabledFeatures.join(','),
+      file_size: selectedVideo.size,
+    });
 
     try {
       // Load VideoIntel library
@@ -131,6 +144,19 @@ export default function PlaygroundPage() {
       };
 
       setResults(results);
+      
+      // Track successful analysis completion
+      trackPlaygroundAction('complete', {
+        total_time: results.performance.totalTime,
+        features: enabledFeatures.join(','),
+      });
+      
+      // Track detailed video processing metrics
+      trackVideoProcessing({
+        duration: results.metadata?.duration,
+        fileSize: selectedVideo.size,
+        features: enabledFeatures,
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to analyze video';
       setError(errorMessage);

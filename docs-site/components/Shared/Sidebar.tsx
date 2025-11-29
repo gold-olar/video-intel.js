@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiBook, FiZap, FiCode, FiPackage, FiFileText, FiHelpCircle } from 'react-icons/fi';
+import { FiBook, FiZap, FiCode, FiPackage, FiFileText, FiHelpCircle, FiShield } from 'react-icons/fi';
 
 interface NavItem {
   title: string;
@@ -72,6 +72,11 @@ const navigation: NavItem[] = [
     title: 'FAQ',
     href: '/docs/faq',
     icon: <FiHelpCircle className="w-4 h-4" />,
+  },
+  {
+    title: 'Privacy Policy',
+    href: '/docs/privacy',
+    icon: <FiShield className="w-4 h-4" />,
   },
 ];
 

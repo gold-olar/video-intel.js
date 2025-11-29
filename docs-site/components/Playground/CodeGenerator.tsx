@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { FiCode, FiCopy, FiCheck } from 'react-icons/fi';
 import { AnalysisConfig } from './FeatureSelector';
+import { trackCodeCopy } from '@/lib/analytics';
 
 interface CodeGeneratorProps {
   config: AnalysisConfig;
@@ -260,6 +261,9 @@ const handleFileChange = async (e) => {
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    
+    // Track code copy event
+    trackCodeCopy(`playground-generated-${framework}`);
   };
 
   return (
