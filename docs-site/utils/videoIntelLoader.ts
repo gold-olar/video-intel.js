@@ -18,7 +18,7 @@ export async function loadVideoIntel() {
 
   try {
     // Try to dynamically import the library
-    const videoIntelModule = await import('video-intel');
+    const videoIntelModule = await import('videointel');
     videoIntelInstance = videoIntelModule.default;
     
     if (!videoIntelInstance) {

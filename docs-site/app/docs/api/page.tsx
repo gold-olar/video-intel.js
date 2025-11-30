@@ -28,7 +28,7 @@ export default function APIReferencePage() {
 
       <CodeBlock
         language="typescript"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 // Use the singleton instance
 await videoIntel.init();
@@ -307,7 +307,7 @@ await videoIntel.init();`}
   
   // Input types
   VideoInput,
-} from 'video-intel';
+} from 'videointel';
 
 // Use in your code for type safety
 const config: VideoIntelConfig = { workers: 4 };

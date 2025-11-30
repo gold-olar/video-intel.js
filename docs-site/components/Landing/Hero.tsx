@@ -64,7 +64,7 @@ export default function Hero() {
                 <span className="text-purple-400">import</span>{' '}
                 <span className="text-blue-400">VideoIntel</span>{' '}
                 <span className="text-purple-400">from</span>{' '}
-                <span className="text-green-400">&apos;video-intel&apos;</span>
+                <span className="text-green-400">&apos;videointel&apos;</span>
                 <span className="text-gray-500">;</span>
                 {'\n\n'}
                 <span className="text-purple-400">const</span>{' '}

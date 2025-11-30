@@ -280,14 +280,14 @@ Save benchmark results to `public/benchmarks/latest.json`:
 
 1. Install VideoIntel:
    ```bash
-   npm install video-intel
+   npm install videointel
    # or use local build
    npm install ../dist
    ```
 
 2. Update playground to use real library:
    ```typescript
-   import videoIntel from 'video-intel';
+   import videoIntel from 'videointel';
    
    const results = await videoIntel.analyze(file, options);
    ```
