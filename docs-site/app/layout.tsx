@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import AnalyticsProvider from '@/components/Analytics/AnalyticsProvider';
 
 export const metadata: Metadata = {
   title: 'VideoIntel.js - Smart Video Analysis in 3 Lines of Code',
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <AnalyticsProvider />
         {children}
       </body>
     </html>

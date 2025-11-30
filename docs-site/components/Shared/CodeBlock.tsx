@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FiCopy, FiCheck } from 'react-icons/fi';
+import { trackCodeCopy } from '@/lib/analytics';
 
 interface CodeBlockProps {
   code: string;
@@ -22,6 +23,10 @@ export default function CodeBlock({
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    
+    // Track code copy event
+    const section = filename || language || 'unknown';
+    trackCodeCopy(`docs-${section}`);
   };
 
   const lines = code.split('\n');

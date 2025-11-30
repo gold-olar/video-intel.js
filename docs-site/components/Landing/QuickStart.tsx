@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FiCopy, FiCheck } from 'react-icons/fi';
+import { trackCodeCopy } from '@/lib/analytics';
 
 const codeExamples = {
   thumbnails: `import VideoIntel from 'videointel';
@@ -70,6 +71,9 @@ export default function QuickStart() {
     navigator.clipboard.writeText(codeExamples[activeTab]);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    
+    // Track code copy event
+    trackCodeCopy(`quick-start-${activeTab}`);
   };
 
   return (

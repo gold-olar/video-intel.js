@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { FiPlay, FiBook, FiCoffee } from 'react-icons/fi';
+import { trackExternalLink } from '@/lib/analytics';
 
 export default function Hero() {
   return (
@@ -45,6 +46,7 @@ export default function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              onClick={() => trackExternalLink('other', 'hero-coffee-link')}
             >
               <FiCoffee className="h-4 w-4" />
               <span>Support this project</span>
