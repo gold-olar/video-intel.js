@@ -1,4 +1,10 @@
 import DocsLayout from '@/components/Docs/DocsLayout';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy - VideoIntel.js',
+  description: 'Privacy policy for the VideoIntel.js documentation site. Learn how we collect, use, and protect your information. GDPR and CCPA compliant.',
+};
 
 const tocItems = [
   { id: 'overview', title: 'Overview', level: 2 },

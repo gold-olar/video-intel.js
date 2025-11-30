@@ -24,13 +24,13 @@ export default function GettingStartedPage() {
       <CodeBlock
         language="bash"
         code={`# Using npm
-npm install video-intel
+npm install videointel
 
 # Using yarn
-yarn add video-intel
+yarn add videointel
 
 # Using pnpm
-pnpm add video-intel`}
+pnpm add videointel`}
       />
 
       <h2 id="quick-start">Quick Start</h2>
@@ -42,7 +42,7 @@ pnpm add video-intel`}
       <CodeBlock
         language="typescript"
         filename="example.ts"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 // Analyze a video file
 async function analyzeVideo(file: File) {
@@ -78,7 +78,7 @@ input?.addEventListener('change', (e) => {
 
       <CodeBlock
         language="typescript"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 async function generateThumbnails(videoFile: File) {
   const thumbnails = await videoIntel.getThumbnails(videoFile, {
@@ -106,7 +106,7 @@ generateThumbnails(myVideoFile);`}
 
       <CodeBlock
         language="typescript"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 async function detectScenes(videoFile: File) {
   const scenes = await videoIntel.detectScenes(videoFile, {
@@ -128,7 +128,7 @@ detectScenes(myVideoFile);`}
 
       <CodeBlock
         language="typescript"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 async function extractColors(videoFile: File) {
   const colors = await videoIntel.extractColors(videoFile, {
@@ -152,7 +152,7 @@ extractColors(myVideoFile);`}
 
       <CodeBlock
         language="typescript"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 async function getVideoInfo(videoFile: File) {
   const metadata = await videoIntel.getMetadata(videoFile);
@@ -205,7 +205,7 @@ getVideoInfo(myVideoFile);`}
   type Scene,
   type Color,
   type VideoMetadata,
-} from 'video-intel';
+} from 'videointel';
 
 // Full type inference
 const options: AnalysisOptions = {

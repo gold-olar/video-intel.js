@@ -111,11 +111,11 @@ export function trackPlaygroundAction(
 // Extend the Window interface to include gtag
 declare global {
   interface Window {
-    gtag?: (
-      command: string,
-      targetId: string | Date,
-      config?: Record<string, unknown>
-    ) => void;
+    gtag?: {
+      (command: 'config', targetId: string, config?: Record<string, unknown>): void;
+      (command: 'event', eventName: string, eventParams?: Record<string, unknown>): void;
+      (command: 'js', date: Date): void;
+    };
   }
 }
 

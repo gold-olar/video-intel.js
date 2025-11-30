@@ -46,3 +46,4 @@ export type {
 // Re-export base Scene types from main types for convenience
 export type { Scene, SceneOptions } from '../../types';
 
+

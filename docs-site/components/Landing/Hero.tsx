@@ -13,7 +13,8 @@ export default function Hero() {
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-5xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-7xl">
             Smart Video Analysis in{' '}
-            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            
+            <span className="bg-gradient-to-r inline-block from-indigo-600 to-purple-600 bg-clip-text text-transparent">
               3 Lines of Code
             </span>
           </h1>
@@ -65,7 +66,7 @@ export default function Hero() {
                 <span className="text-purple-400">import</span>{' '}
                 <span className="text-blue-400">VideoIntel</span>{' '}
                 <span className="text-purple-400">from</span>{' '}
-                <span className="text-green-400">&apos;video-intel&apos;</span>
+                <span className="text-green-400">&apos;videointel&apos;</span>
                 <span className="text-gray-500">;</span>
                 {'\n\n'}
                 <span className="text-purple-400">const</span>{' '}

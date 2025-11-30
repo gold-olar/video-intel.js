@@ -27,7 +27,7 @@ export default function ReactIntegrationPage() {
         language="typescript"
         filename="VideoAnalyzer.tsx"
         code={`import { useState } from 'react';
-import videoIntel, { type AnalysisResult } from 'video-intel';
+import videoIntel, { type AnalysisResult } from 'videointel';
 
 export default function VideoAnalyzer() {
   const [file, setFile] = useState<File | null>(null);
@@ -248,7 +248,7 @@ export default function VideoUploader({
       <CodeBlock
         language="typescript"
         filename="ThumbnailGallery.tsx"
-        code={`import type { Thumbnail } from 'video-intel';
+        code={`import type { Thumbnail } from 'videointel';
 
 interface ThumbnailGalleryProps {
   thumbnails: Thumbnail[];
@@ -325,7 +325,7 @@ export default function ThumbnailGallery({
         language="typescript"
         filename="useVideoAnalysis.ts"
         code={`import { useState, useCallback } from 'react';
-import videoIntel, { type AnalysisOptions, type AnalysisResult } from 'video-intel';
+import videoIntel, { type AnalysisOptions, type AnalysisResult } from 'videointel';
 
 interface AnalysisState {
   loading: boolean;

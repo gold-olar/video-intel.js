@@ -5,7 +5,7 @@ import { FiCopy, FiCheck } from 'react-icons/fi';
 import { trackCodeCopy } from '@/lib/analytics';
 
 const codeExamples = {
-  thumbnails: `import VideoIntel from 'video-intel';
+  thumbnails: `import VideoIntel from 'videointel';
 
 const analyzer = new VideoIntel();
 const results = await analyzer.analyze(videoFile, {
@@ -20,7 +20,7 @@ results.thumbnails.forEach(thumb => {
   console.log(thumb.dataUrl, thumb.timestamp);
 });`,
 
-  scenes: `import VideoIntel from 'video-intel';
+  scenes: `import VideoIntel from 'videointel';
 
 const analyzer = new VideoIntel();
 const results = await analyzer.analyze(videoFile, {
@@ -34,7 +34,7 @@ results.scenes.forEach(scene => {
   console.log(\`Scene at \${scene.timestamp}s\`);
 });`,
 
-  colors: `import VideoIntel from 'video-intel';
+  colors: `import VideoIntel from 'videointel';
 
 const analyzer = new VideoIntel();
 const results = await analyzer.analyze(videoFile, {
@@ -48,7 +48,7 @@ results.colors.forEach(color => {
   console.log(color.hex, color.percentage);
 });`,
 
-  full: `import VideoIntel from 'video-intel';
+  full: `import VideoIntel from 'videointel';
 
 const analyzer = new VideoIntel();
 const results = await analyzer.analyze(videoFile, {
@@ -100,7 +100,7 @@ export default function QuickStart() {
               </h3>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 <code className="rounded bg-gray-200 dark:bg-gray-800 px-2 py-1">
-                  npm install video-intel
+                  npm install videointel
                 </code>
               </p>
             </div>

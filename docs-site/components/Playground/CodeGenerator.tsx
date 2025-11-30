@@ -34,7 +34,7 @@ export default function CodeGenerator({ config, videoFileName = 'video.mp4' }: C
 
     switch (framework) {
       case 'typescript':
-        return `import videoIntel from 'video-intel';
+        return `import videoIntel from 'videointel';
 
 async function analyzeVideo(file: File) {
   // Initialize VideoIntel (optional)
@@ -58,7 +58,7 @@ input?.addEventListener('change', async (e) => {
 });`;
 
       case 'javascript':
-        return `import videoIntel from 'video-intel';
+        return `import videoIntel from 'videointel';
 
 async function analyzeVideo(file) {
   // Initialize VideoIntel (optional)
@@ -121,7 +121,7 @@ input?.addEventListener('change', async (e) => {
           </div>` : '';
 
         return `import { useState } from 'react';
-import videoIntel from 'video-intel';
+import videoIntel from 'videointel';
 
 function VideoAnalyzer() {
   const [results, setResults] = useState(null);
@@ -228,7 +228,7 @@ export default VideoAnalyzer;`;
 
 <script setup>
 import { ref } from 'vue';
-import videoIntel from 'video-intel';
+import videoIntel from 'videointel';
 
 const results = ref(null);
 const loading = ref(false);

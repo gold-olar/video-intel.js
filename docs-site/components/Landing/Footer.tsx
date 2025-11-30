@@ -55,7 +55,7 @@ export default function Footer() {
                 <FiGithub className="h-6 w-6" />
               </a>
               <a
-                href="https://npmjs.com/package/video-intel"
+                href="https://npmjs.com/package/videointel"
                 className="text-gray-400 hover:text-gray-300 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"

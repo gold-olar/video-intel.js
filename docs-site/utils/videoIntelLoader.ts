@@ -1,8 +1,6 @@
 /**
  * Utility to load and initialize VideoIntel library
  * Handles dynamic imports and error cases gracefully
- * 
- * NOTE: Temporarily disabled for docs deployment without published package
  */
 
 let videoIntelInstance: any = null;
@@ -18,16 +16,9 @@ export async function loadVideoIntel() {
     throw new Error('VideoIntel can only be loaded in the browser');
   }
 
-  // TEMPORARILY DISABLED FOR DOCS DEPLOYMENT
-  // Remove this block and uncomment the code below once package is published
-  throw new Error(
-    'The interactive playground is currently unavailable. It will be enabled once the VideoIntel package is published to npm. In the meantime, please check out the documentation and code examples.'
-  );
-
-  /* UNCOMMENT THIS SECTION WHEN PACKAGE IS PUBLISHED TO NPM
   try {
     // Try to dynamically import the library
-    const videoIntelModule = await import('video-intel');
+    const videoIntelModule = await import('videointel');
     videoIntelInstance = videoIntelModule.default;
     
     if (!videoIntelInstance) {
@@ -43,7 +34,6 @@ export async function loadVideoIntel() {
       '2. Restart the dev server'
     );
   }
-  */
 }
 
 export function clearVideoIntelCache() {

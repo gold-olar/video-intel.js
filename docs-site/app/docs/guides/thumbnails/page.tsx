@@ -185,7 +185,7 @@ function scoreFrame(imageData: ImageData) {
 
       <CodeBlock
         language="typescript"
-        code={`import videoIntel from 'video-intel';
+        code={`import videoIntel from 'videointel';
 
 // Generate 10 high-quality thumbnails
 const thumbnails = await videoIntel.getThumbnails(videoFile, {
