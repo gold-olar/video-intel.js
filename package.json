@@ -1,6 +1,6 @@
 {
   "name": "videointel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Smart video analysis in 3 lines of code. TypeScript-first, privacy-focused, zero-cost.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

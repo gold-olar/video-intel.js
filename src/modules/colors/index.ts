@@ -21,3 +21,4 @@ export { ColorConverter } from './ColorConverter';
 export type { RGB, HSL } from './ColorConverter';
 export type { ClusterOptions, ColorCluster, PixelData } from './types';
 
+
