@@ -133,14 +133,21 @@ export class ModelLoader {
       );
     }
 
+    // Ensure we're using absolute URL
+    const absoluteModelUrl = modelUrl.startsWith('http') 
+      ? modelUrl 
+      : CDN_URLS.primary;
+
     // Load model with retry logic
-    await this.loadWithRetry(async () => {
+    await this.loadWithRetry(async (urlToUse: string) => {
       try {
+        console.log(`🔄 Loading face detection model (${modelType}) from: ${urlToUse}`);
+
         // Load the appropriate model based on type
         if (modelType === 'tiny') {
-          await faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl);
+          await faceapi.nets.tinyFaceDetector.loadFromUri(urlToUse);
         } else if (modelType === 'ssd') {
-          await faceapi.nets.ssdMobilenetv1.loadFromUri(modelUrl);
+          await faceapi.nets.ssdMobilenetv1.loadFromUri(urlToUse);
         } else {
           throw new VideoIntelError(
             `Unknown model type: ${modelType}`,
@@ -158,15 +165,17 @@ export class ModelLoader {
           throw new VideoIntelError(
             'Model loaded but verification failed',
             ErrorCode.MODEL_LOAD_ERROR,
-            { modelType, modelUrl }
+            { modelType, modelUrl: urlToUse }
           );
         }
+
+        console.log(`✅ Face detection model loaded successfully from ${urlToUse}`);
 
         // Update state
         this.faceModelState = {
           loaded: true,
           modelType,
-          loadedFrom: modelUrl,
+          loadedFrom: urlToUse,
           loadedAt: Date.now(),
         };
 
@@ -176,8 +185,11 @@ export class ModelLoader {
           throw error;
         }
         
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error('❌ Model loading error:', errorMessage);
+        
         throw new VideoIntelError(
-          `Failed to load face detection model: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          `Failed to load face detection model: ${errorMessage}. Check console for details.`,
           ErrorCode.MODEL_LOAD_ERROR,
           { 
             modelType, 
@@ -186,7 +198,7 @@ export class ModelLoader {
           }
         );
       }
-    }, modelUrl);
+    }, absoluteModelUrl, modelType);
   }
 
   /**
@@ -318,35 +330,33 @@ export class ModelLoader {
    * Load with retry logic and exponential backoff
    * 
    * Attempts to load a model up to 3 times with exponential backoff.
-   * This handles transient network failures gracefully.
+   * On final attempt, tries fallback CDN.
    * 
    * @param loadFn - Async function that performs the actual loading
-   * @param url - URL being loaded from (for error messages)
+   * @param primaryUrl - Primary URL being loaded from
+   * @param modelType - Type of model being loaded
    * @throws {VideoIntelError} If all retry attempts fail
    * 
    * @private
    */
   private async loadWithRetry(
-    loadFn: () => Promise<void>,
-    url: string
+    loadFn: (url: string) => Promise<void>,
+    primaryUrl: string,
+    modelType: FaceModelType = 'tiny'
   ): Promise<void> {
     const { maxRetries, initialDelayMs, backoffMultiplier } = RETRY_CONFIG;
     let lastError: Error | null = null;
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
-        // Try with fallback URL on last attempt if primary CDN fails
-        if (attempt === maxRetries && url === CDN_URLS.primary) {
-          // Last attempt: try fallback CDN
-          const fallbackUrl = CDN_URLS.fallback;
-          console.warn(`Retrying with fallback CDN: ${fallbackUrl}`);
-          
-          // Update the URL for the load function
-          // Note: This is a simplified approach - in production, you might want
-          // to pass the URL as a parameter to loadFn
+        // Try fallback URL on last attempt if using primary CDN
+        let urlToTry = primaryUrl;
+        if (attempt === maxRetries && primaryUrl === CDN_URLS.primary) {
+          urlToTry = CDN_URLS.fallback;
+          console.warn(`🔄 Final attempt: trying fallback CDN: ${urlToTry}`);
         }
 
-        await loadFn();
+        await loadFn(urlToTry);
         return; // Success!
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
@@ -360,7 +370,7 @@ export class ModelLoader {
         const delay = initialDelayMs * Math.pow(backoffMultiplier, attempt);
         
         console.warn(
-          `Model loading attempt ${attempt + 1} failed. Retrying in ${delay}ms...`,
+          `⚠️ Model loading attempt ${attempt + 1}/${maxRetries + 1} failed. Retrying in ${delay}ms...`,
           lastError.message
         );
 
@@ -371,11 +381,12 @@ export class ModelLoader {
 
     // All retries failed
     throw new VideoIntelError(
-      `Failed to load model after ${maxRetries + 1} attempts: ${lastError?.message || 'Unknown error'}`,
+      `Failed to load model after ${maxRetries + 1} attempts: ${lastError?.message || 'Unknown error'}. CDNs may be unreachable.`,
       ErrorCode.MODEL_LOAD_ERROR,
       {
         attempts: maxRetries + 1,
-        url,
+        primaryUrl,
+        fallbackUrl: CDN_URLS.fallback,
         lastError: lastError?.message,
       }
     );

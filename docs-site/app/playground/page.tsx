@@ -29,6 +29,15 @@ export default function PlaygroundPage() {
       enabled: true,
       count: 5,
     },
+    faces: {
+      enabled: false,
+      confidence: 0.7,
+      returnCoordinates: true,
+      returnThumbnails: true,
+      thumbnailFormat: 'jpeg',
+      thumbnailQuality: 0.8,
+      samplingRate: 2,
+    },
     metadata: true,
   });
   const [results, setResults] = useState<{
@@ -52,6 +61,7 @@ export default function PlaygroundPage() {
     if (config.thumbnails.enabled) enabledFeatures.push('thumbnails');
     if (config.scenes.enabled) enabledFeatures.push('scenes');
     if (config.colors.enabled) enabledFeatures.push('colors');
+    if (config.faces.enabled) enabledFeatures.push('faces');
     if (config.metadata) enabledFeatures.push('metadata');
     
     trackPlaygroundAction('start', {
@@ -96,6 +106,17 @@ export default function PlaygroundPage() {
         };
       }
 
+      if (config.faces.enabled) {
+        analysisOptions.faces = {
+          confidence: config.faces.confidence,
+          returnCoordinates: config.faces.returnCoordinates,
+          returnThumbnails: config.faces.returnThumbnails,
+          thumbnailFormat: config.faces.thumbnailFormat,
+          thumbnailQuality: config.faces.thumbnailQuality,
+          samplingRate: config.faces.samplingRate,
+        };
+      }
+
       if (config.metadata) {
         analysisOptions.metadata = true;
       }
@@ -133,12 +154,14 @@ export default function PlaygroundPage() {
         thumbnails,
         scenes: analysisResult.scenes,
         colors: analysisResult.colors,
+        faces: analysisResult.faces,
         metadata: analysisResult.metadata,
         performance: {
           totalTime: Math.round(totalTime),
           thumbnailTime: analysisResult.performance?.thumbnailTime,
           sceneTime: analysisResult.performance?.sceneTime,
           colorTime: analysisResult.performance?.colorTime,
+          faceTime: analysisResult.performance?.faceTime,
           metadataTime: analysisResult.performance?.metadataTime,
         },
       };
@@ -175,6 +198,7 @@ export default function PlaygroundPage() {
     config.thumbnails.enabled ||
     config.scenes.enabled ||
     config.colors.enabled ||
+    config.faces.enabled ||
     config.metadata;
 
   return (

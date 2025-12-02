@@ -26,6 +26,20 @@ export default function CodeGenerator({ config, videoFileName = 'video.mp4' }: C
     if (config.colors.enabled) {
       features.push(`colors: { count: ${config.colors.count} }`);
     }
+    if ((config as any).faces?.enabled) {
+      const facesConfig: string[] = [];
+      facesConfig.push(`confidence: ${(config as any).faces.confidence}`);
+      if ((config as any).faces.returnCoordinates) {
+        facesConfig.push(`returnCoordinates: true`);
+      }
+      if ((config as any).faces.returnThumbnails) {
+        facesConfig.push(`returnThumbnails: true`);
+        facesConfig.push(`thumbnailFormat: '${(config as any).faces.thumbnailFormat}'`);
+        facesConfig.push(`thumbnailQuality: ${(config as any).faces.thumbnailQuality}`);
+      }
+      facesConfig.push(`samplingRate: ${(config as any).faces.samplingRate}`);
+      features.push(`faces: { ${facesConfig.join(', ')} }`);
+    }
     if (config.metadata) {
       features.push(`metadata: true`);
     }
@@ -43,7 +57,7 @@ async function analyzeVideo(file: File) {
   // Analyze video with configured features
   const results = await videoIntel.analyze(file${optionsStr});
 
-  ${config.thumbnails.enabled ? '// Access thumbnails\n  console.log(\'Thumbnails:\', results.thumbnails);\n  ' : ''}${config.scenes.enabled ? '// Access scenes\n  console.log(\'Scenes:\', results.scenes);\n  ' : ''}${config.colors.enabled ? '// Access colors\n  console.log(\'Colors:\', results.colors);\n  ' : ''}${config.metadata ? '// Access metadata\n  console.log(\'Metadata:\', results.metadata);\n  ' : ''}
+  ${config.thumbnails.enabled ? '// Access thumbnails\n  console.log(\'Thumbnails:\', results.thumbnails);\n  ' : ''}${config.scenes.enabled ? '// Access scenes\n  console.log(\'Scenes:\', results.scenes);\n  ' : ''}${config.colors.enabled ? '// Access colors\n  console.log(\'Colors:\', results.colors);\n  ' : ''}${(config as any).faces?.enabled ? '// Access face detection results\n  console.log(\'Faces:\', results.faces);\n  ' : ''}${config.metadata ? '// Access metadata\n  console.log(\'Metadata:\', results.metadata);\n  ' : ''}
   return results;
 }
 
@@ -67,7 +81,7 @@ async function analyzeVideo(file) {
   // Analyze video with configured features
   const results = await videoIntel.analyze(file${optionsStr});
 
-  ${config.thumbnails.enabled ? '// Access thumbnails\n  console.log(\'Thumbnails:\', results.thumbnails);\n  ' : ''}${config.scenes.enabled ? '// Access scenes\n  console.log(\'Scenes:\', results.scenes);\n  ' : ''}${config.colors.enabled ? '// Access colors\n  console.log(\'Colors:\', results.colors);\n  ' : ''}${config.metadata ? '// Access metadata\n  console.log(\'Metadata:\', results.metadata);\n  ' : ''}
+  ${config.thumbnails.enabled ? '// Access thumbnails\n  console.log(\'Thumbnails:\', results.thumbnails);\n  ' : ''}${config.scenes.enabled ? '// Access scenes\n  console.log(\'Scenes:\', results.scenes);\n  ' : ''}${config.colors.enabled ? '// Access colors\n  console.log(\'Colors:\', results.colors);\n  ' : ''}${(config as any).faces?.enabled ? '// Access face detection results\n  console.log(\'Faces:\', results.faces);\n  ' : ''}${config.metadata ? '// Access metadata\n  console.log(\'Metadata:\', results.metadata);\n  ' : ''}
   return results;
 }
 
@@ -108,6 +122,24 @@ input?.addEventListener('change', async (e) => {
             {results.colors?.map((color, i) => (
               <div key={i} style=\{\{ backgroundColor: color.hex \}\}>
                 {color.hex} - {color.percentage}%
+              </div>
+            ))}
+          </div>
+          ` : '';
+        
+        const facesCode = (config as any).faces?.enabled
+          ? `<div>
+            <h3>Faces</h3>
+            <p>Detected: {results.faces?.detected ? 'Yes' : 'No'}</p>
+            <p>Average: {results.faces?.averageCount.toFixed(1)}</p>
+            {results.faces?.frames.map((frame, i) => (
+              <div key={i}>
+                <p>At {frame.timestamp}s: {frame.faces.length} face(s)</p>
+                {frame.faces.map((face, j) => (
+                  face.thumbnail && (
+                    <img key={j} src={URL.createObjectURL(face.thumbnail)} alt={\`Face \${j + 1}\`} />
+                  )
+                ))}
               </div>
             ))}
           </div>
@@ -155,7 +187,7 @@ function VideoAnalyzer() {
       
       {results && (
         <div>
-          ${thumbnailsCode}${scenesCode}${colorsCode}${metadataCode}
+          ${thumbnailsCode}${scenesCode}${colorsCode}${facesCode}${metadataCode}
         </div>
       )}
     </div>
@@ -202,6 +234,24 @@ export default VideoAnalyzer;`;
       </div>
       ` : '';
         
+        const facesCode = (config as any).faces?.enabled
+          ? `<div>
+        <h3>Faces</h3>
+        <p>Detected: {{ results.faces?.detected ? 'Yes' : 'No' }}</p>
+        <p>Average: {{ results.faces?.averageCount.toFixed(1) }}</p>
+        <div v-for="(frame, i) in results.faces?.frames" :key="i">
+          <p>At {{ frame.timestamp }}s: {{ frame.faces.length }} face(s)</p>
+          <img
+            v-for="(face, j) in frame.faces"
+            v-if="face.thumbnail"
+            :key="j"
+            :src="URL.createObjectURL(face.thumbnail)"
+            :alt="\`Face \${j + 1}\`"
+          />
+        </div>
+      </div>
+      ` : '';
+        
         const metadataCode = config.metadata
           ? `<div>
         <h3>Metadata</h3>
@@ -221,7 +271,7 @@ export default VideoAnalyzer;`;
     <p v-if="loading">Analyzing video...</p>
     
     <div v-if="results">
-      ${thumbnailsCode}${scenesCode}${colorsCode}${metadataCode}
+      ${thumbnailsCode}${scenesCode}${colorsCode}${facesCode}${metadataCode}
     </div>
   </div>
 </template>

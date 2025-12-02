@@ -1,6 +1,6 @@
 'use client';
 
-import { FiImage, FiFilm, FiDroplet, FiInfo } from 'react-icons/fi';
+import { FiImage, FiFilm, FiDroplet, FiInfo, FiUser } from 'react-icons/fi';
 
 export interface AnalysisConfig {
   thumbnails: {
@@ -15,6 +15,15 @@ export interface AnalysisConfig {
   colors: {
     enabled: boolean;
     count: number;
+  };
+  faces: {
+    enabled: boolean;
+    confidence: number;
+    returnCoordinates: boolean;
+    returnThumbnails: boolean;
+    thumbnailFormat: 'jpeg' | 'png';
+    thumbnailQuality: number;
+    samplingRate: number;
   };
   metadata: boolean;
 }
@@ -229,6 +238,216 @@ export default function FeatureSelector({ config, onChange }: FeatureSelectorPro
               }
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
             />
+          </div>
+        )}
+      </div>
+
+      {/* Face Detection */}
+      <div className="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-pink-100 dark:bg-pink-950/50 p-2">
+              <FiUser className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                Detect Faces
+              </h4>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Find faces with optional bounding boxes & thumbnails
+              </p>
+            </div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={config.faces.enabled}
+              onChange={(e) =>
+                updateConfig({
+                  faces: { ...config.faces, enabled: e.target.checked },
+                })
+              }
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 dark:peer-focus:ring-pink-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-pink-600"></div>
+          </label>
+        </div>
+
+        {config.faces.enabled && (
+          <div className="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+            <div>
+              <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <span>Confidence Threshold</span>
+                <span className="font-mono text-pink-600 dark:text-pink-400">{config.faces.confidence.toFixed(1)}</span>
+              </label>
+              <input
+                type="range"
+                min="0.5"
+                max="0.95"
+                step="0.05"
+                value={config.faces.confidence}
+                onChange={(e) =>
+                  updateConfig({
+                    faces: { ...config.faces, confidence: parseFloat(e.target.value) },
+                  })
+                }
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              />
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <span>More faces (0.5)</span>
+                <span>High confidence (0.95)</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Sampling Rate: {config.faces.samplingRate}s
+              </label>
+              <input
+                type="range"
+                min="0.5"
+                max="5"
+                step="0.5"
+                value={config.faces.samplingRate}
+                onChange={(e) =>
+                  updateConfig({
+                    faces: { ...config.faces, samplingRate: parseFloat(e.target.value) },
+                  })
+                }
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                How often to check for faces (in seconds)
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Return Coordinates
+                </label>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Get bounding box positions
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={config.faces.returnCoordinates}
+                  onChange={(e) =>
+                    updateConfig({
+                      faces: { 
+                        ...config.faces, 
+                        returnCoordinates: e.target.checked,
+                        // Disable thumbnails if coordinates are disabled
+                        returnThumbnails: e.target.checked ? config.faces.returnThumbnails : false
+                      },
+                    })
+                  }
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 dark:peer-focus:ring-pink-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-pink-600"></div>
+              </label>
+            </div>
+
+            {config.faces.returnCoordinates && (
+              <div className="pl-4 border-l-2 border-pink-200 dark:border-pink-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Extract Face Thumbnails
+                    </label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Crop detected faces as images
+                    </p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={config.faces.returnThumbnails}
+                      onChange={(e) =>
+                        updateConfig({
+                          faces: { ...config.faces, returnThumbnails: e.target.checked },
+                        })
+                      }
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 dark:peer-focus:ring-pink-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-pink-600"></div>
+                  </label>
+                </div>
+
+                {config.faces.returnThumbnails && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                        Thumbnail Format
+                      </label>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() =>
+                            updateConfig({
+                              faces: { ...config.faces, thumbnailFormat: 'jpeg' },
+                            })
+                          }
+                          className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                            config.faces.thumbnailFormat === 'jpeg'
+                              ? 'border-pink-600 bg-pink-50 dark:bg-pink-950/30 text-pink-600 dark:text-pink-400'
+                              : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          JPEG
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateConfig({
+                              faces: { ...config.faces, thumbnailFormat: 'png' },
+                            })
+                          }
+                          className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                            config.faces.thumbnailFormat === 'png'
+                              ? 'border-pink-600 bg-pink-50 dark:bg-pink-950/30 text-pink-600 dark:text-pink-400'
+                              : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'
+                          }`}
+                        >
+                          PNG
+                        </button>
+                      </div>
+                    </div>
+
+                    {config.faces.thumbnailFormat === 'jpeg' && (
+                      <div>
+                        <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          <span>Thumbnail Quality</span>
+                          <span className="font-mono text-pink-600 dark:text-pink-400">{config.faces.thumbnailQuality.toFixed(1)}</span>
+                        </label>
+                        <input
+                          type="range"
+                          min="0.5"
+                          max="1"
+                          step="0.1"
+                          value={config.faces.thumbnailQuality}
+                          onChange={(e) =>
+                            updateConfig({
+                              faces: { ...config.faces, thumbnailQuality: parseFloat(e.target.value) },
+                            })
+                          }
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                          Higher quality = larger file size
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="mt-3 p-2 bg-pink-50 dark:bg-pink-950/30 rounded border border-pink-200 dark:border-pink-800">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                <strong className="text-pink-600 dark:text-pink-400">Note:</strong> Face detection uses AI models (~2MB) loaded on first use. Enable thumbnails to see detected faces visually.
+              </p>
+            </div>
           </div>
         )}
       </div>

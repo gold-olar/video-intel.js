@@ -8,6 +8,7 @@ const tocItems = [
   { id: 'get-thumbnails', title: 'getThumbnails()', level: 3 },
   { id: 'detect-scenes', title: 'detectScenes()', level: 3 },
   { id: 'extract-colors', title: 'extractColors()', level: 3 },
+  { id: 'detect-faces', title: 'detectFaces()', level: 3 },
   { id: 'get-metadata', title: 'getMetadata()', level: 3 },
   { id: 'dispose', title: 'dispose()', level: 3 },
   { id: 'types', title: 'Type Definitions', level: 2 },
@@ -238,6 +239,90 @@ colors.forEach(color => {
 });`}
       />
 
+      <h3 id="detect-faces">detectFaces(videoInput, options?)</h3>
+      <p>Detect faces in videos with optional bounding boxes and face thumbnails.</p>
+
+      <CodeBlock
+        language="typescript"
+        code={`interface FaceOptions {
+  confidence?: number;              // Confidence threshold (0-1, default: 0.7)
+  returnCoordinates?: boolean;      // Return bounding boxes (default: false)
+  returnThumbnails?: boolean;       // Extract face images (default: false)
+  thumbnailFormat?: 'jpeg' | 'png'; // Image format (default: 'jpeg')
+  thumbnailQuality?: number;        // JPEG quality 0-1 (default: 0.8)
+  samplingRate?: number;            // Sampling interval in seconds (default: 2)
+}
+
+// Basic detection (count only)
+const faces = await videoIntel.detectFaces(file);
+
+// With bounding boxes
+const facesWithBoxes = await videoIntel.detectFaces(file, {
+  confidence: 0.8,
+  returnCoordinates: true,
+  samplingRate: 1
+});
+
+// With face thumbnails
+const facesWithThumbnails = await videoIntel.detectFaces(file, {
+  confidence: 0.7,
+  returnCoordinates: true,
+  returnThumbnails: true,
+  thumbnailFormat: 'jpeg',
+  thumbnailQuality: 0.9
+});`}
+      />
+
+      <h4>Returns</h4>
+      <CodeBlock
+        language="typescript"
+        code={`interface FaceDetection {
+  detected: boolean;               // Whether any faces were detected
+  averageCount: number;            // Average faces per frame
+  frames: FaceFrame[];             // Frames with faces (if returnCoordinates)
+}
+
+interface FaceFrame {
+  timestamp: number;               // Time in video (seconds)
+  faces: Face[];                   // Detected faces in this frame
+}
+
+interface Face {
+  x: number;                       // Bounding box X (top-left)
+  y: number;                       // Bounding box Y (top-left)
+  width: number;                   // Bounding box width
+  height: number;                  // Bounding box height
+  confidence: number;              // Detection confidence (0-1)
+  thumbnail?: Blob;                // Face image (if returnThumbnails)
+}
+
+// Example: Display face gallery
+facesWithThumbnails.frames.forEach(frame => {
+  console.log(\`At \${frame.timestamp}s: \${frame.faces.length} faces\`);
+  
+  frame.faces.forEach((face, i) => {
+    if (face.thumbnail) {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(face.thumbnail);
+      img.alt = \`Face \${i + 1}\`;
+      img.title = \`Confidence: \${(face.confidence * 100).toFixed(0)}%\`;
+      document.body.appendChild(img);
+    }
+  });
+});`}
+      />
+
+      <div className="not-prose bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 my-6">
+        <p className="text-sm text-yellow-900 dark:text-yellow-100 font-semibold mb-2">
+          📝 Important Note
+        </p>
+        <p className="text-sm text-yellow-700 dark:text-yellow-300">
+          <code>returnThumbnails: true</code> requires <code>returnCoordinates: true</code>.
+          The first call will load the face detection model (~190KB) from CDN, which takes ~2
+          seconds. Subsequent calls reuse the cached model.
+        </p>
+      </div>
+
       <h3 id="get-metadata">getMetadata(videoInput)</h3>
       <p>Extract technical metadata from the video file.</p>
 
@@ -303,6 +388,10 @@ await videoIntel.init();`}
   Scene,
   ColorOptions,
   Color,
+  FaceOptions,
+  FaceDetection,
+  FaceFrame,
+  Face,
   VideoMetadata,
   
   // Input types
@@ -311,7 +400,10 @@ await videoIntel.init();`}
 
 // Use in your code for type safety
 const config: VideoIntelConfig = { workers: 4 };
-const options: AnalysisOptions = { thumbnails: { count: 10 } };`}
+const options: AnalysisOptions = { 
+  thumbnails: { count: 10 },
+  faces: { confidence: 0.8 }
+};`}
       />
 
       <div className="not-prose bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 my-6">

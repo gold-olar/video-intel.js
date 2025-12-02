@@ -5,6 +5,8 @@ const tocItems = [
   { id: 'basic-integration', title: 'Basic Integration', level: 2 },
   { id: 'video-uploader', title: 'Video Uploader Component', level: 2 },
   { id: 'thumbnail-gallery', title: 'Thumbnail Gallery', level: 2 },
+  { id: 'face-detection', title: 'Face Detection Integration', level: 2 },
+  { id: 'face-gallery', title: 'Face Gallery Component', level: 2 },
   { id: 'progress-tracking', title: 'Progress Tracking', level: 2 },
   { id: 'error-handling', title: 'Error Handling', level: 2 },
 ];
@@ -316,6 +318,340 @@ export default function ThumbnailGallery({
 }`}
       />
 
+      <h2 id="face-detection">Face Detection Integration</h2>
+      <p>
+        Integrate face detection into your React components with real-time results:
+      </p>
+
+      <CodeBlock
+        language="typescript"
+        filename="FaceDetectionComponent.tsx"
+        code={`import { useState } from 'react';
+import videoIntel, { type FaceDetection } from 'videointel';
+
+export default function FaceDetectionComponent() {
+  const [file, setFile] = useState<File | null>(null);
+  const [faceResults, setFaceResults] = useState<FaceDetection | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const detectFaces = async () => {
+    if (!file) return;
+
+    setLoading(true);
+    try {
+      const faces = await videoIntel.detectFaces(file, {
+        confidence: 0.75,
+        returnCoordinates: true,
+        returnThumbnails: true,
+        thumbnailFormat: 'jpeg',
+        thumbnailQuality: 0.85
+      });
+      setFaceResults(faces);
+    } catch (error) {
+      console.error('Face detection failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Face Detection</h1>
+
+      <div className="mb-6">
+        <input
+          type="file"
+          accept="video/*"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+          className="block w-full text-sm"
+        />
+      </div>
+
+      <button
+        onClick={detectFaces}
+        disabled={!file || loading}
+        className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+      >
+        {loading ? 'Detecting Faces...' : 'Detect Faces'}
+      </button>
+
+      {faceResults && (
+        <div className="mt-6">
+          <div className="mb-4 p-4 bg-gray-100 rounded">
+            <p><strong>Faces Detected:</strong> {faceResults.detected ? 'Yes' : 'No'}</p>
+            <p><strong>Average Count:</strong> {faceResults.averageCount.toFixed(1)}</p>
+            <p><strong>Frames Analyzed:</strong> {faceResults.frames.length}</p>
+            <p><strong>Total Faces:</strong> {
+              faceResults.frames.reduce((sum, f) => sum + f.faces.length, 0)
+            }</p>
+          </div>
+
+          {faceResults.frames.length > 0 && (
+            <div className="space-y-4">
+              {faceResults.frames.map((frame, frameIdx) => (
+                <div key={frameIdx} className="border rounded p-4">
+                  <h3 className="font-semibold mb-2">
+                    At {frame.timestamp.toFixed(1)}s - {frame.faces.length} face(s)
+                  </h3>
+                  <div className="grid grid-cols-4 gap-4">
+                    {frame.faces.map((face, faceIdx) => (
+                      <div key={faceIdx} className="relative">
+                        {face.thumbnail && (
+                          <div>
+                            <img
+                              src={URL.createObjectURL(face.thumbnail)}
+                              alt={\`Face \${faceIdx + 1}\`}
+                              className="rounded shadow"
+                            />
+                            <p className="text-xs text-center mt-1">
+                              {(face.confidence * 100).toFixed(0)}% confidence
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}`}
+      />
+
+      <h2 id="face-gallery">Face Gallery Component</h2>
+      <p>
+        Create a reusable face gallery component with download functionality:
+      </p>
+
+      <CodeBlock
+        language="typescript"
+        filename="FaceGallery.tsx"
+        code={`import { useEffect, useState } from 'react';
+import type { FaceDetection, Face } from 'videointel';
+
+interface FaceGalleryProps {
+  faceResults: FaceDetection;
+  onFaceClick?: (face: Face, timestamp: number) => void;
+}
+
+interface FaceItem {
+  face: Face;
+  timestamp: number;
+  frameIndex: number;
+  faceIndex: number;
+}
+
+export default function FaceGallery({ faceResults, onFaceClick }: FaceGalleryProps) {
+  const [allFaces, setAllFaces] = useState<FaceItem[]>([]);
+  const [filter, setFilter] = useState<'all' | 'high-confidence'>('all');
+
+  useEffect(() => {
+    // Flatten all faces from all frames
+    const faces: FaceItem[] = [];
+    faceResults.frames.forEach((frame, frameIdx) => {
+      frame.faces.forEach((face, faceIdx) => {
+        faces.push({
+          face,
+          timestamp: frame.timestamp,
+          frameIndex: frameIdx,
+          faceIndex: faceIdx
+        });
+      });
+    });
+    setAllFaces(faces);
+
+    // Cleanup object URLs on unmount
+    return () => {
+      faces.forEach(({ face }) => {
+        if (face.thumbnail) {
+          URL.revokeObjectURL(URL.createObjectURL(face.thumbnail));
+        }
+      });
+    };
+  }, [faceResults]);
+
+  const filteredFaces = allFaces.filter(item => {
+    if (filter === 'high-confidence') {
+      return item.face.confidence >= 0.8;
+    }
+    return true;
+  });
+
+  const downloadFace = (face: Face, timestamp: number, index: number) => {
+    if (!face.thumbnail) return;
+
+    const url = URL.createObjectURL(face.thumbnail);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = \`face-\${index}-\${timestamp.toFixed(1)}s.jpg\`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAll = () => {
+    filteredFaces.forEach((item, index) => {
+      setTimeout(() => {
+        downloadFace(item.face, item.timestamp, index);
+      }, index * 100); // Stagger downloads
+    });
+  };
+
+  return (
+    <div className="face-gallery">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold">
+            Face Gallery ({filteredFaces.length} faces)
+          </h2>
+          <p className="text-sm text-gray-600">
+            Average: {faceResults.averageCount.toFixed(1)} faces per frame
+          </p>
+        </div>
+
+        <div className="flex gap-4">
+          {/* Filter */}
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as any)}
+            className="px-3 py-2 border rounded text-sm"
+          >
+            <option value="all">All Faces</option>
+            <option value="high-confidence">High Confidence Only</option>
+          </select>
+
+          {/* Download All Button */}
+          <button
+            onClick={downloadAll}
+            className="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+          >
+            Download All ({filteredFaces.length})
+          </button>
+        </div>
+      </div>
+
+      {/* Gallery Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {filteredFaces.map((item, index) => (
+          <FaceCard
+            key={\`\${item.frameIndex}-\${item.faceIndex}\`}
+            item={item}
+            index={index}
+            onClick={() => onFaceClick?.(item.face, item.timestamp)}
+            onDownload={() => downloadFace(item.face, item.timestamp, index)}
+          />
+        ))}
+      </div>
+
+      {filteredFaces.length === 0 && (
+        <div className="text-center py-12 text-gray-500">
+          No faces found matching the current filter.
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface FaceCardProps {
+  item: FaceItem;
+  index: number;
+  onClick: () => void;
+  onDownload: () => void;
+}
+
+function FaceCard({ item, index, onClick, onDownload }: FaceCardProps) {
+  const { face, timestamp } = item;
+
+  if (!face.thumbnail) return null;
+
+  const [imageUrl, setImageUrl] = useState('');
+
+  useEffect(() => {
+    const url = URL.createObjectURL(face.thumbnail!);
+    setImageUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [face.thumbnail]);
+
+  return (
+    <div className="group relative rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow bg-white">
+      <img
+        src={imageUrl}
+        alt={\`Face \${index + 1}\`}
+        className="w-full h-auto cursor-pointer"
+        onClick={onClick}
+      />
+
+      {/* Hover Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <div className="text-white space-y-1">
+            <div className="text-xs font-medium">
+              Face #{index + 1}
+            </div>
+            <div className="text-xs opacity-90">
+              Time: {timestamp.toFixed(1)}s
+            </div>
+            <div className="text-xs opacity-90">
+              Confidence: {(face.confidence * 100).toFixed(0)}%
+            </div>
+            <div className="text-xs opacity-90">
+              Size: {face.width}×{face.height}
+            </div>
+          </div>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDownload();
+            }}
+            className="mt-2 w-full px-2 py-1 bg-white/20 hover:bg-white/30 rounded text-xs backdrop-blur-sm transition-colors"
+          >
+            Download
+          </button>
+        </div>
+      </div>
+
+      {/* Confidence Badge */}
+      <div className="absolute top-2 right-2 px-2 py-1 rounded text-xs font-medium bg-black/60 text-white">
+        {(face.confidence * 100).toFixed(0)}%
+      </div>
+    </div>
+  );
+}
+
+// Usage Example
+function App() {
+  const [faceResults, setFaceResults] = useState<FaceDetection | null>(null);
+
+  const handleFileUpload = async (file: File) => {
+    const faces = await videoIntel.detectFaces(file, {
+      returnCoordinates: true,
+      returnThumbnails: true,
+      confidence: 0.7
+    });
+    setFaceResults(faces);
+  };
+
+  return (
+    <div>
+      {/* File upload UI */}
+      {faceResults && (
+        <FaceGallery
+          faceResults={faceResults}
+          onFaceClick={(face, timestamp) => {
+            console.log(\`Clicked face at \${timestamp}s\`, face);
+          }}
+        />
+      )}
+    </div>
+  );
+}`}
+      />
+
       <h2 id="progress-tracking">Progress Tracking</h2>
       <p>
         Track analysis progress with a custom hook:
@@ -520,6 +856,7 @@ function App() {
           📚 More Examples
         </p>
         <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+          <li>• <a href="/docs/guides/faces" className="underline">Face Detection Guide</a></li>
           <li>• <a href="/docs/examples/vue" className="underline">Vue Integration</a></li>
           <li>• <a href="/docs/examples/upload" className="underline">Complete Upload Flow</a></li>
           <li>• <a href="/playground" className="underline">Try Interactive Playground</a></li>

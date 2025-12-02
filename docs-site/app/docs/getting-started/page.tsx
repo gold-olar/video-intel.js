@@ -147,6 +147,47 @@ async function extractColors(videoFile: File) {
 extractColors(myVideoFile);`}
       />
 
+      <h3>Detect Faces</h3>
+      <p>Detect faces in your video with optional coordinates and thumbnails:</p>
+
+      <CodeBlock
+        language="typescript"
+        code={`import videoIntel from 'videointel';
+
+async function detectFaces(videoFile: File) {
+  // Basic face detection
+  const faces = await videoIntel.detectFaces(videoFile, {
+    confidence: 0.7,      // Confidence threshold (0-1)
+    samplingRate: 2       // Check every 2 seconds
+  });
+
+  console.log(\`Faces detected: \${faces.detected}\`);
+  console.log(\`Average faces per frame: \${faces.averageCount}\`);
+
+  // With bounding boxes and face thumbnails
+  const facesWithThumbnails = await videoIntel.detectFaces(videoFile, {
+    confidence: 0.8,
+    returnCoordinates: true,
+    returnThumbnails: true,    // Extract face images
+    thumbnailFormat: 'jpeg',   // 'jpeg' or 'png'
+    thumbnailQuality: 0.9      // Quality (0-1)
+  });
+
+  // Display face thumbnails
+  facesWithThumbnails.frames.forEach(frame => {
+    console.log(\`At \${frame.timestamp}s: \${frame.faces.length} faces\`);
+    frame.faces.forEach((face, i) => {
+      if (face.thumbnail) {
+        const url = URL.createObjectURL(face.thumbnail);
+        console.log(\`  Face \${i + 1}: \${url}\`);
+      }
+    });
+  });
+}
+
+detectFaces(myVideoFile);`}
+      />
+
       <h3>Get Video Metadata</h3>
       <p>Extract technical information about the video:</p>
 

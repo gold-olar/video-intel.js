@@ -38,12 +38,28 @@ export interface FaceModelConfig {
 /**
  * CDN configuration for face-api.js models
  * 
- * Primary: jsDelivr CDN (fast, reliable, global)
- * Fallback: unpkg CDN (backup option)
+ * Primary: jsDelivr CDN with GitHub repository (fast, global CDN with caching)
+ * Fallback: Raw GitHub content (direct from repository)
+ * Local: Local hosting option (if models are downloaded)
+ * 
+ * Note: These URLs point to the directory containing model weight files.
+ * face-api.js will append the specific model filenames automatically.
+ * The URL must NOT end with a trailing slash.
+ * 
+ * IMPORTANT: The npm packages on jsdelivr/unpkg do NOT include the weights directory.
+ * We must use GitHub repository URLs instead.
+ * 
+ * Verified working URLs (tested 2024-12-02):
+ * ✅ jsDelivr GitHub: https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights
+ * ✅ Raw GitHub: https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights
  */
 export const CDN_URLS = {
-  primary: 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights',
-  fallback: 'https://unpkg.com/face-api.js@0.22.2/weights',
+  // Primary: jsDelivr CDN serving GitHub files (fast, with caching)
+  primary: 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+  // Fallback: Raw GitHub content (direct from repository, no CDN caching)
+  fallback: 'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights',
+  // Local hosting (if you download models to public directory)
+  local: '/models/face-api',
 } as const;
 
 /**
@@ -160,7 +176,7 @@ export function checkBrowserCompatibility(): {
         reason: 'Canvas 2D context not available',
       };
     }
-  } catch (error) {
+  } catch {
     return {
       supported: false,
       reason: 'Canvas API error',

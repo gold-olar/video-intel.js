@@ -84,6 +84,12 @@ const colors = await VideoIntel.extractColors(videoFile, {
   count: 5
 });
 
+// Detect faces in video
+const faces = await VideoIntel.detectFaces(videoFile, {
+  confidence: 0.7,
+  returnCoordinates: true
+});
+
 // Get video metadata
 const metadata = await VideoIntel.getMetadata(videoFile);
 console.log(`${metadata.width}x${metadata.height}, ${metadata.duration}s`);
@@ -148,6 +154,7 @@ function VideoUploader() {
 - ✅ **Smart Thumbnail Generation** - Automatically select the best frames using quality scoring
 - ✅ **Scene Detection** - Identify scene changes and transitions with configurable sensitivity
 - ✅ **Color Extraction** - Extract dominant colors using K-means clustering
+- ✅ **Face Detection** - Detect faces in videos with optional bounding boxes and face thumbnails
 - ✅ **Metadata Extraction** - Duration, dimensions, aspect ratio, FPS, audio/video tracks
 - ✅ **Progress Tracking** - Real-time progress callbacks for long operations
 - ✅ **Memory Management** - Intelligent cleanup to prevent memory leaks
@@ -177,6 +184,64 @@ Real-world performance on a modern laptop (tested on M1 MacBook):
 - No memory leaks over extended usage
 
 > 💡 **Tip**: Use the `analyze()` method to extract multiple features at once for better performance.
+
+---
+
+## 👤 Face Detection
+
+Detect faces in videos with configurable confidence thresholds, optional bounding box coordinates, and face thumbnails.
+
+```typescript
+// Basic face detection (count only)
+const faces = await VideoIntel.detectFaces(videoFile);
+console.log(`Faces detected: ${faces.detected}`);
+console.log(`Average faces per frame: ${faces.averageCount}`);
+
+// With bounding boxes
+const facesWithBoxes = await VideoIntel.detectFaces(videoFile, {
+  confidence: 0.8,           // Higher confidence threshold
+  returnCoordinates: true,   // Get bounding boxes
+  samplingRate: 1            // Check every 1 second
+});
+
+// Draw bounding boxes
+facesWithBoxes.frames.forEach(frame => {
+  frame.faces.forEach(face => {
+    console.log(`Face at (${face.x}, ${face.y}), size: ${face.width}x${face.height}`);
+  });
+});
+
+// With face thumbnails
+const facesWithThumbnails = await VideoIntel.detectFaces(videoFile, {
+  confidence: 0.7,
+  returnCoordinates: true,
+  returnThumbnails: true,     // Extract cropped face images
+  thumbnailFormat: 'jpeg',    // 'jpeg' or 'png'
+  thumbnailQuality: 0.9       // JPEG quality (0-1)
+});
+
+// Display detected faces
+facesWithThumbnails.frames.forEach(frame => {
+  console.log(`At ${frame.timestamp}s: ${frame.faces.length} faces`);
+  
+  frame.faces.forEach((face, i) => {
+    if (face.thumbnail) {
+      const url = URL.createObjectURL(face.thumbnail);
+      displayFaceImage(url, `Face ${i + 1}`, face.confidence);
+    }
+  });
+});
+
+// In analyze() method
+const analysis = await VideoIntel.analyze(videoFile, {
+  faces: {
+    confidence: 0.7,
+    returnCoordinates: true,
+    returnThumbnails: true
+  },
+  thumbnails: { count: 5 }
+});
+```
 
 ---
 
@@ -231,6 +296,20 @@ Extract dominant colors from a video.
 - `sampleFrames`: Number of frames to sample (default: 10)
 - `quality`: `'fast' | 'balanced' | 'accurate'` (default: 'balanced')
 
+### `VideoIntel.detectFaces(video, options?)`
+
+Detect faces in videos with optional coordinates and thumbnails.
+
+**Options**:
+- `confidence`: Detection confidence threshold 0-1 (default: 0.7)
+- `returnCoordinates`: Return bounding box coordinates (default: false)
+- `returnThumbnails`: Extract cropped face images (default: false)
+- `thumbnailFormat`: `'jpeg' | 'png'` (default: 'jpeg')
+- `thumbnailQuality`: JPEG quality 0-1 (default: 0.8)
+- `samplingRate`: Sampling interval in seconds (default: 2)
+
+**Returns**: `Promise<FaceDetection>`
+
 ### `VideoIntel.getMetadata(video)`
 
 Extract video metadata (duration, dimensions, format, etc.).
@@ -284,26 +363,31 @@ VideoIntel.js works in all modern browsers that support:
 - Generate thumbnails on upload without server processing
 - Create video previews and chapter markers
 - Extract colors for UI theming
+- Detect faces for content moderation
 
 ### Content Management Systems
 - Automatic video metadata extraction
 - Smart thumbnail selection for listings
 - Scene-based navigation
+- Face detection for searchable content
 
 ### Video Editors & Tools
 - Timeline preview generation
 - Scene detection for automatic splitting
 - Color grading analysis
+- Face detection for automatic tracking
 
 ### E-learning Platforms
 - Chapter detection for course videos
 - Thumbnail generation for video libraries
 - Metadata extraction for search/filtering
+- Face detection for speaker identification
 
 ### Social Media & Marketing
 - Automatic thumbnail selection for posts
 - Color palette extraction for branding
 - Video quality assessment
+- Face detection for content analysis
 
 ---
 
@@ -404,8 +488,8 @@ Please ensure:
 - [x] TypeScript support
 - [x] Browser compatibility
 
-### Phase 2: Advanced AI Features (Coming Soon)
-- [ ] 👤 **Face Detection** - Identify and track faces in videos
+### Phase 2: Advanced AI Features (In Progress)
+- [x] 👤 **Face Detection** - Identify and track faces in videos ✅
 - [ ] 🔍 **Object Detection** - Recognize 80+ common objects (COCO dataset)
 - [ ] 📊 **Quality Assessment** - Automatic video quality scoring
 - [ ] 🎬 **Action Recognition** - Detect activities and movements
