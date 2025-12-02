@@ -349,6 +349,7 @@ export class ModelLoader {
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
+        console.log('Loading model with retry logic:', primaryUrl, modelType);
         // Try fallback URL on last attempt if using primary CDN
         let urlToTry = primaryUrl;
         if (attempt === maxRetries && primaryUrl === CDN_URLS.primary) {

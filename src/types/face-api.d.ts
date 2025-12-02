@@ -67,6 +67,7 @@ declare module 'face-api.js' {
    */
   export interface WithFaceDetection<TSource> {
     detection: FaceDetection;
+    source: TSource;
   }
 
   // ==========================================

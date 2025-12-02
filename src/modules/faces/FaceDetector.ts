@@ -165,6 +165,7 @@ const PROGRESS_WEIGHTS = {
   THUMBNAILS: 0.1,    // 90-100%
 };
 
+
 // ============================================================================
 // FaceDetector Class
 // ============================================================================
@@ -282,6 +283,7 @@ export class FaceDetector {
       video,
       timestamps,
       (progress) => {
+        console.log('Frame extraction progress:', progress, PROGRESS_WEIGHTS.EXTRACTION);
         // Map frame extraction progress to 0-40% range
         // This reflects that extraction is 40% of total work
         // No callback in options, so we don't report progress here
