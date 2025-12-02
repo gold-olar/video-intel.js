@@ -127,9 +127,23 @@ export interface Color {
 // ============================================================================
 
 export interface FaceOptions {
-  confidence?: number; // Default: 0.7
-  returnCoordinates?: boolean; // Default: false
-  samplingRate?: number; // Seconds, Default: 2
+  /** Confidence threshold for face detection (0-1). Default: 0.7 */
+  confidence?: number;
+  
+  /** Return bounding box coordinates for detected faces. Default: false */
+  returnCoordinates?: boolean;
+  
+  /** Return cropped face thumbnails. Requires returnCoordinates: true. Default: false */
+  returnThumbnails?: boolean;
+  
+  /** Thumbnail image format when returnThumbnails is true. Default: 'jpeg' */
+  thumbnailFormat?: 'jpeg' | 'png';
+  
+  /** Thumbnail quality for JPEG format (0-1). Default: 0.8 */
+  thumbnailQuality?: number;
+  
+  /** Sampling rate in seconds between frame analysis. Default: 2 */
+  samplingRate?: number;
 }
 
 export interface FaceDetection {
@@ -144,11 +158,23 @@ export interface FaceFrame {
 }
 
 export interface Face {
+  /** X coordinate of bounding box (top-left corner) */
   x: number;
+  
+  /** Y coordinate of bounding box (top-left corner) */
   y: number;
+  
+  /** Width of bounding box in pixels */
   width: number;
+  
+  /** Height of bounding box in pixels */
   height: number;
+  
+  /** Detection confidence score (0-1) */
   confidence: number;
+  
+  /** Cropped face image (only present when returnThumbnails: true) */
+  thumbnail?: Blob;
 }
 
 // ============================================================================
