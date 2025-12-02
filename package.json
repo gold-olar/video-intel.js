@@ -78,5 +78,8 @@
     "ts-jest": "^29.4.5",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "face-api.js": "^0.22.2"
   }
 }
