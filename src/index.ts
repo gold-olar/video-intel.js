@@ -18,6 +18,8 @@ import type {
   ColorOptions,
   Color,
   VideoInput,
+  FaceOptions,
+  FaceDetection,
 } from './types';
 
 class VideoIntel {
@@ -93,6 +95,44 @@ class VideoIntel {
   }
 
   /**
+   * Detect faces in video (Phase 3: NEW!)
+   * 
+   * Analyzes a video to detect faces in frames at specified intervals.
+   * Can return basic counts, bounding box coordinates, and face thumbnails.
+   * 
+   * @param videoInput - Video to analyze (File, Blob, or URL string)
+   * @param options - Optional configuration for face detection
+   * @returns Promise resolving to FaceDetection result
+   * 
+   * @example
+   * ```typescript
+   * // Basic detection (count only)
+   * const result = await VideoIntel.detectFaces(videoFile);
+   * console.log(`Faces detected: ${result.detected}`);
+   * console.log(`Average faces: ${result.averageCount}`);
+   * 
+   * // With coordinates
+   * const result = await VideoIntel.detectFaces(videoFile, {
+   *   confidence: 0.8,
+   *   returnCoordinates: true
+   * });
+   * 
+   * // With face thumbnails
+   * const result = await VideoIntel.detectFaces(videoFile, {
+   *   confidence: 0.7,
+   *   returnCoordinates: true,
+   *   returnThumbnails: true,
+   *   thumbnailFormat: 'jpeg',
+   *   thumbnailQuality: 0.9
+   * });
+   * ```
+   */
+  async detectFaces(videoInput: VideoInput, options?: FaceOptions): Promise<FaceDetection> {
+    await this.ensureInitialized();
+    return this.processor.detectFaces(videoInput, options);
+  }
+
+  /**
    * Cleanup resources
    */
   async dispose(): Promise<void> {
@@ -127,3 +167,9 @@ export { FrameScorer } from './modules/thumbnails/FrameScorer';
 // Export scene detection classes
 export { SceneDetector } from './modules/scenes/SceneDetector';
 export { FrameDifferenceCalculator } from './modules/scenes/FrameDifferenceCalculator';
+
+// Export face detection classes (Phase 3: NEW!)
+export { FaceDetector } from './modules/faces/FaceDetector';
+
+// Export model loading classes
+export { ModelLoader } from './models/ModelLoader';

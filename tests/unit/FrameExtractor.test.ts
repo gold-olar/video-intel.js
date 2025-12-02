@@ -119,12 +119,12 @@ function mockCreateElement() {
       } as unknown as CanvasRenderingContext2D;
       
       // Mock getContext to return our mock context
-      jest.spyOn(canvas, 'getContext').mockImplementation((contextType: string) => {
+      jest.spyOn(canvas, 'getContext').mockImplementation(((contextType: string) => {
         if (contextType === '2d') {
           return mockContext;
         }
         return null;
-      });
+      }) as any);
       
       // Mock toBlob
       jest.spyOn(canvas, 'toBlob').mockImplementation((callback: BlobCallback) => {

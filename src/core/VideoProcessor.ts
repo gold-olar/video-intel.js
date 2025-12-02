@@ -13,6 +13,8 @@ import type {
   VideoMetadata,
   ColorOptions,
   Color,
+  FaceOptions,
+  FaceDetection,
 } from '../types';
 import { VideoLoader } from '../utils/VideoLoader';
 import { MemoryManager } from '../utils/MemoryManager';
@@ -22,16 +24,20 @@ import { ColorExtractor, KMeansClustering } from '../modules/colors';
 import { MetadataExtractor } from '../modules/metadata';
 import { ThumbnailGenerator } from '../modules/thumbnails/ThumbnailGenerator';
 import { FrameScorer } from '../modules/thumbnails/FrameScorer';
+import { FaceDetector } from '../modules/faces';
+import { ModelLoader } from '../models/ModelLoader';
 
 export class VideoProcessor {
   private videoLoader: VideoLoader;
   private memoryManager: MemoryManager;
   private frameExtractor: FrameExtractor;
+  private modelLoader: ModelLoader;
 
   constructor() {
     this.videoLoader = new VideoLoader();
     this.memoryManager = MemoryManager.getInstance();
     this.frameExtractor = new FrameExtractor();
+    this.modelLoader = new ModelLoader();
   }
 
   /**
@@ -125,6 +131,16 @@ export class VideoProcessor {
         ? undefined 
         : options.colors;
       result.colors = await this.extractColors(videoInput, colorOpts);
+      completedFeatures++;
+      updateProgress();
+    }
+    
+    // Detect faces (Phase 3: NEW!)
+    if (options.faces) {
+      const faceOpts = typeof options.faces === 'boolean' 
+        ? undefined 
+        : options.faces;
+      result.faces = await this.detectFaces(videoInput, faceOpts);
       completedFeatures++;
       updateProgress();
     }
@@ -342,6 +358,100 @@ export class VideoProcessor {
       return colors;
     } finally {
       // Always clean up resources, even if extraction fails
+      this.memoryManager.cleanupVideo(video);
+      this.videoLoader.cleanup();
+    }
+  }
+
+  /**
+   * Detect faces in video (Phase 3: NEW!)
+   * 
+   * Analyzes a video to detect faces in frames at specified intervals.
+   * Uses face-api.js with TinyFaceDetector model for fast, accurate detection.
+   * 
+   * Features:
+   * - Configurable confidence threshold
+   * - Optional bounding box coordinates
+   * - Optional face thumbnails (cropped face images)
+   * - Configurable sampling rate
+   * 
+   * Use cases:
+   * - Count people in video
+   * - Create face galleries
+   * - Content moderation
+   * - Find specific people
+   * - Analyze face presence over time
+   * 
+   * @param videoInput - Video to analyze (File, Blob, or URL string)
+   * @param options - Optional configuration for face detection
+   * @returns Promise resolving to FaceDetection result
+   * 
+   * @example
+   * ```typescript
+   * const processor = new VideoProcessor();
+   * 
+   * // Basic detection (count only)
+   * const result = await processor.detectFaces(videoFile);
+   * console.log(`Faces detected: ${result.detected}`);
+   * console.log(`Average faces per frame: ${result.averageCount}`);
+   * 
+   * // With coordinates
+   * const result = await processor.detectFaces(videoFile, {
+   *   confidence: 0.8,
+   *   returnCoordinates: true,
+   *   samplingRate: 1.0  // Check every second
+   * });
+   * 
+   * // With face thumbnails
+   * const result = await processor.detectFaces(videoFile, {
+   *   confidence: 0.7,
+   *   returnCoordinates: true,
+   *   returnThumbnails: true,
+   *   thumbnailFormat: 'jpeg',
+   *   thumbnailQuality: 0.9
+   * });
+   * 
+   * // Display faces
+   * result.frames.forEach(frame => {
+   *   console.log(`At ${frame.timestamp}s: ${frame.faces.length} faces`);
+   *   frame.faces.forEach(face => {
+   *     console.log(`  Face at (${face.x}, ${face.y})`);
+   *     if (face.thumbnail) {
+   *       // Display or save thumbnail
+   *       const url = URL.createObjectURL(face.thumbnail);
+   *       console.log(`  Thumbnail: ${url}`);
+   *     }
+   *   });
+   * });
+   * ```
+   */
+  async detectFaces(videoInput: VideoInput, options?: FaceOptions): Promise<FaceDetection> {
+    // Load the video from input
+    const video = await this.videoLoader.load(videoInput);
+
+    try {
+      // Create face detector with required dependencies
+      // - FrameExtractor: For extracting frames from video
+      // - ModelLoader: For loading face detection models
+      const faceDetector = new FaceDetector(
+        this.frameExtractor,
+        this.modelLoader
+      );
+
+      // Detect faces
+      // This will:
+      // 1. Load face detection model (if not already loaded)
+      // 2. Extract frames at specified sampling rate
+      // 3. Detect faces in each frame
+      // 4. Optionally extract face thumbnails
+      // 5. Return aggregated results
+      const result = await faceDetector.detect(video, options);
+
+      return result;
+    } finally {
+      // Always clean up resources, even if detection fails
+      // Note: We don't clear the model cache here because it's shared
+      // across multiple calls and expensive to reload
       this.memoryManager.cleanupVideo(video);
       this.videoLoader.cleanup();
     }
